@@ -4,101 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zaachila Moto - Admin</title>
-    
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
     <style>
-        :root {
-            --bg:#0a0a0f; --bg2:#13111a; --card:#1a1722; --acc:#6C5CE7;
-            --green:#00C897; --red:#FF4757; --warn:#FFA502; --txt:#fff; --txt2:#aaa; --txt3:#666; --bd:#252130;
-            --r:12px; --r2:18px;
-        }
+        :root{--bg:#0a0a0f;--bg2:#13111a;--card:#1a1722;--acc:#6C5CE7;--green:#00C897;--red:#FF4757;--warn:#FFA502;--txt:#fff;--txt2:#aaa;--txt3:#666;--bd:#252130;--r:12px;--r2:18px}
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
-
-        /* LOGIN */
+        
         .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
-        .login-box{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:2.5rem;width:90%;max-width:380px;text-align:center}
-        .login-box .logo{font-size:3.5rem}
-        .login-box h1{font-size:1.5rem;margin:1rem 0}
-        .inp{width:100%;padding:.8rem;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);margin-bottom:.7rem;outline:0}
+        .login-box{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:2rem;width:90%;max-width:360px;text-align:center}
+        .login-box .logo{font-size:3rem}
+        .login-box h1{font-size:1.3rem;margin:.8rem 0}
+        .inp{width:100%;padding:.7rem;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);margin-bottom:.6rem;outline:0;font-size:.9rem}
         .inp:focus{border-color:var(--acc)}
-        .btn{width:100%;padding:.8rem;border-radius:var(--r);font-weight:700;cursor:pointer;border:0;font-size:.9rem;transition:.2s}
+        .btn{width:100%;padding:.7rem;border-radius:var(--r);font-weight:700;cursor:pointer;border:0;font-size:.85rem}
         .btn-acc{background:var(--acc);color:#fff}
-        .btn-acc:hover{opacity:.9}
-        .btn-sm{padding:.4rem .8rem;border-radius:8px;font-size:.75rem;cursor:pointer;background:var(--card);border:1px solid var(--bd);color:var(--txt2);white-space:nowrap}
+        .btn-sm{padding:.35rem .7rem;border-radius:8px;font-size:.7rem;cursor:pointer;background:var(--card);border:1px solid var(--bd);color:var(--txt2);white-space:nowrap}
         .btn-sm:hover{background:var(--bd)}
-        .login-err{background:rgba(255,71,87,.1);border:1px solid var(--red);padding:.6rem;border-radius:var(--r);margin-bottom:.8rem;font-size:.8rem;display:none}
+        .login-err{background:rgba(255,71,87,.1);border:1px solid var(--red);padding:.5rem;border-radius:var(--r);margin-bottom:.6rem;font-size:.75rem;display:none}
 
-        /* DASHBOARD */
         .dashboard{display:none}
-        .topbar{background:var(--bg2);padding:.7rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
-        .topbar h2{font-size:1.1rem;display:flex;align-items:center;gap:.5rem}
-        .topbar-actions{display:flex;gap:.5rem;align-items:center}
+        .topbar{background:var(--bg2);padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+        .topbar h2{font-size:1rem}
+        .topbar-actions{display:flex;gap:.4rem;align-items:center}
 
-        .layout{display:grid;grid-template-columns:220px 1fr;gap:1rem;padding:1rem;min-height:calc(100vh - 55px)}
-        .sidebar{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:1rem;height:fit-content;position:sticky;top:70px}
-        .sidebar a{display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;border-radius:var(--r);color:var(--txt2);text-decoration:none;font-size:.85rem;margin-bottom:.3rem;cursor:pointer}
+        .layout{display:grid;grid-template-columns:200px 1fr;gap:1rem;padding:1rem}
+        .sidebar{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:.8rem;height:fit-content;position:sticky;top:60px}
+        .sidebar a{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;border-radius:var(--r);color:var(--txt2);text-decoration:none;font-size:.8rem;margin-bottom:.2rem;cursor:pointer}
         .sidebar a:hover,.sidebar a.on{background:var(--acc);color:#fff}
-        .content{display:flex;flex-direction:column;gap:1rem}
+        
+        .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin-bottom:1rem}
+        .card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:1rem}
+        .card .val{font-size:1.8rem;font-weight:800}
+        .card .lbl{font-size:.7rem;color:var(--txt3)}
 
-        .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem}
-        .card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:1.2rem}
-        .card .val{font-size:2rem;font-weight:800}
-        .card .lbl{font-size:.75rem;color:var(--txt3);margin-top:.2rem}
-        .card .icon{font-size:1.5rem;margin-bottom:.5rem}
+        .panel{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:1rem}
+        .panel h3{font-size:.9rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
 
-        .panel{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:1.2rem}
-        .panel h3{font-size:.95rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
-
-        .map-box{height:400px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--bd)}
-        #liveMap{height:100%;width:100%}
-
-        table{width:100%;border-collapse:collapse;font-size:.8rem}
-        th{background:rgba(255,255,255,.03);padding:.6rem;text-align:left;font-weight:600;color:var(--txt2);font-size:.7rem;text-transform:uppercase;letter-spacing:.5px}
-        td{padding:.6rem;border-bottom:1px solid rgba(255,255,255,.03)}
-        tr:hover td{background:rgba(255,255,255,.02)}
-
-        .badge{padding:.2rem .6rem;border-radius:12px;font-size:.65rem;font-weight:700}
+        table{width:100%;border-collapse:collapse;font-size:.75rem}
+        th{background:rgba(255,255,255,.03);padding:.5rem;text-align:left;font-weight:600;color:var(--txt2);font-size:.65rem;text-transform:uppercase}
+        td{padding:.5rem;border-bottom:1px solid rgba(255,255,255,.03)}
+        
+        .badge{padding:.15rem .5rem;border-radius:10px;font-size:.6rem;font-weight:700}
         .badge-g{background:rgba(0,200,151,.15);color:var(--green)}
         .badge-r{background:rgba(255,71,87,.15);color:var(--red)}
         .badge-y{background:rgba(255,165,2,.15);color:var(--warn)}
         .badge-b{background:rgba(108,92,231,.15);color:var(--acc)}
 
         .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center}
-        .modal{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:1.5rem;width:90%;max-width:450px;max-height:80vh;overflow-y:auto}
-        .modal h3{margin-bottom:1rem}
-        .modal .inp{margin-bottom:.8rem}
-        .modal-btns{display:flex;gap:.6rem;margin-top:1rem}
+        .modal{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:1.2rem;width:90%;max-width:400px;max-height:80vh;overflow-y:auto}
+        .modal-btns{display:flex;gap:.5rem;margin-top:.8rem}
         .modal-btns .btn{flex:1}
+        textarea{width:100%;min-height:150px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);padding:.7rem;font-family:monospace;font-size:.75rem;resize:vertical;outline:0}
 
-        .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);padding:.7rem 1.2rem;border-radius:var(--r);z-index:300;font-size:.8rem;font-weight:600;animation:t 2.5s ease forwards}
-        @keyframes t{0%{opacity:0;transform:translateX(-50%) translateY(-15px)}10%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
+        .toast{position:fixed;top:15px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);padding:.6rem 1rem;border-radius:var(--r);z-index:300;font-size:.75rem;font-weight:600;animation:t 2.5s ease forwards}
+        @keyframes t{0%{opacity:0;transform:translateX(-50%) translateY(-10px)}10%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
 
-        textarea{width:100%;min-height:200px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);padding:.8rem;font-family:monospace;font-size:.8rem;resize:vertical;outline:0}
-
-        @media(max-width:768px){
-            .layout{grid-template-columns:1fr}
-            .sidebar{position:fixed;bottom:0;left:0;right:0;z-index:99;border-radius:18px 18px 0 0;display:flex;flex-direction:row;overflow-x:auto;padding:.5rem;gap:.3rem}
-            .sidebar a{font-size:.7rem;padding:.5rem .7rem;white-space:nowrap;margin:0}
-            .content{padding-bottom:70px}
-            .map-box{height:250px}
-        }
+        @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{position:fixed;bottom:0;left:0;right:0;z-index:99;border-radius:18px 18px 0 0;display:flex;flex-direction:row;overflow-x:auto;padding:.4rem;gap:.2rem}.sidebar a{font-size:.65rem;padding:.4rem .6rem;white-space:nowrap;margin:0}.cards{grid-template-columns:repeat(2,1fr)}}
     </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
     <div class="login-box">
         <div class="logo">🏍️</div>
-        <h1>Zaachila Moto</h1>
+        <h1>Zaachila Moto Admin</h1>
         <div id="loginError" class="login-err"></div>
         <input type="email" id="email" class="inp" placeholder="Email" value="admin@zaachilamoto.com">
         <input type="password" id="password" class="inp" placeholder="Contraseña">
@@ -106,15 +79,14 @@
     </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard" class="dashboard">
     <header class="topbar">
         <h2>🏍️ Zaachila Moto</h2>
         <div class="topbar-actions">
-            <span style="font-size:.8rem;color:var(--txt2);" id="adminName">Admin</span>
-            <button class="btn-sm" onclick="exportData()">📥 Exportar</button>
-            <button class="btn-sm" onclick="importData()">📤 Importar</button>
-            <button class="btn-sm" onclick="auth.signOut();location.reload();">Salir</button>
+            <span style="font-size:.75rem;color:var(--txt2)" id="adminName">Admin</span>
+            <button class="btn-sm" onclick="exportData()">📥</button>
+            <button class="btn-sm" onclick="importData()">📤</button>
+            <button class="btn-sm" onclick="auth.signOut();location.reload()">Salir</button>
         </div>
     </header>
 
@@ -125,36 +97,31 @@
             <a onclick="tab('services',this)">📋 Viajes</a>
             <a onclick="tab('reports',this)">📝 Reportes</a>
             <a onclick="tab('finances',this)">💰 Caja</a>
-            <a onclick="tab('config',this)">⚙️ Config</a>
         </nav>
 
-        <div class="content">
-            <!-- OVERVIEW -->
+        <div>
             <div id="tab-overview">
                 <div class="cards">
-                    <div class="card"><div class="icon">🏍️</div><div class="val" id="stActive">0</div><div class="lbl">Choferes activos</div></div>
-                    <div class="card"><div class="icon">📋</div><div class="val" id="stServices">0</div><div class="lbl">Viajes en curso</div></div>
-                    <div class="card"><div class="icon">💰</div><div class="val" id="stEarnings">$0</div><div class="lbl">Ganancias hoy</div></div>
-                    <div class="card"><div class="icon">✅</div><div class="val" id="stTotal">0</div><div class="lbl">Completados hoy</div></div>
+                    <div class="card"><div class="val" id="stActive">0</div><div class="lbl">Choferes activos</div></div>
+                    <div class="card"><div class="val" id="stServices">0</div><div class="lbl">Viajes en curso</div></div>
+                    <div class="card"><div class="val" id="stEarnings">$0</div><div class="lbl">Ganancias hoy</div></div>
+                    <div class="card"><div class="val" id="stCompleted">0</div><div class="lbl">Completados</div></div>
                 </div>
-                <div class="map-box"><div id="liveMap"></div></div>
             </div>
 
-            <!-- DRIVERS -->
             <div id="tab-drivers" style="display:none">
                 <div class="panel">
                     <h3>🏍️ Choferes <button class="btn-sm" onclick="addDriver()" style="margin-left:auto">+ Nuevo</button></h3>
                     <div style="overflow-x:auto"><table>
-                        <thead><tr><th>Nombre</th><th>Email</th><th>Placa</th><th>Estado</th><th>⭐</th><th>Acc</th></tr></thead>
+                        <thead><tr><th>Nombre</th><th>Email</th><th>Placa</th><th>Estado</th><th>⭐</th><th></th></tr></thead>
                         <tbody id="driversBody"><tr><td colspan="6" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody>
                     </table></div>
                 </div>
             </div>
 
-            <!-- SERVICES -->
             <div id="tab-services" style="display:none">
                 <div class="panel">
-                    <h3>📋 Viajes</h3>
+                    <h3>📋 Viajes recientes</h3>
                     <div style="overflow-x:auto"><table>
                         <thead><tr><th>ID</th><th>Origen</th><th>Destino</th><th>Estado</th><th>$</th></tr></thead>
                         <tbody id="servicesBody"><tr><td colspan="5" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody>
@@ -162,22 +129,20 @@
                 </div>
             </div>
 
-            <!-- REPORTS -->
             <div id="tab-reports" style="display:none">
                 <div class="panel">
                     <h3>📝 Objetos reportados</h3>
                     <div style="overflow-x:auto"><table>
-                        <thead><tr><th>Fecha</th><th>Descripción</th><th>Estado</th><th>Acc</th></tr></thead>
+                        <thead><tr><th>Fecha</th><th>Descripción</th><th>Estado</th><th></th></tr></thead>
                         <tbody id="reportsBody"><tr><td colspan="4" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody>
                     </table></div>
                 </div>
             </div>
 
-            <!-- FINANCES -->
             <div id="tab-finances" style="display:none">
                 <div class="panel">
                     <h3>💰 Comisiones</h3>
-                    <div class="cards" style="margin-bottom:1rem">
+                    <div class="cards">
                         <div class="card"><div class="lbl">Hoy</div><div class="val" style="font-size:1.5rem" id="finToday">$0</div></div>
                         <div class="card"><div class="lbl">Mes</div><div class="val" style="font-size:1.5rem" id="finMonth">$0</div></div>
                     </div>
@@ -185,27 +150,6 @@
                         <thead><tr><th>Fecha</th><th>Viaje</th><th>Monto</th><th>10%</th></tr></thead>
                         <tbody id="commissionsBody"><tr><td colspan="4" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody>
                     </table></div>
-                </div>
-            </div>
-
-            <!-- CONFIG -->
-            <div id="tab-config" style="display:none">
-                <div class="panel">
-                    <h3>⚙️ Configuración de datos</h3>
-                    <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">Importa o exporta todos los datos del sistema en formato JSON.</p>
-                    
-                    <div style="display:flex;gap:.5rem;margin-bottom:1rem">
-                        <button class="btn btn-acc" onclick="exportData()" style="flex:1">📥 Exportar datos</button>
-                        <button class="btn" onclick="importData()" style="flex:1;background:var(--warn);color:#000">📤 Importar datos</button>
-                    </div>
-                    
-                    <div id="jsonEditor" style="display:none">
-                        <textarea id="jsonText" placeholder="Pega aquí el JSON..."></textarea>
-                        <div style="display:flex;gap:.5rem;margin-top:.5rem">
-                            <button class="btn" onclick="cancelImport()" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)">Cancelar</button>
-                            <button class="btn btn-acc" onclick="confirmImport()">Importar</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -218,10 +162,7 @@
 const fb={apiKey:"AIzaSyCBXBPMz2OZ3U2KfTaU-uHCBhwmbnR7O40",authDomain:"zaachilamoto.firebaseapp.com",databaseURL:"https://zaachilamoto-default-rtdb.firebaseio.com",projectId:"zaachilamoto",storageBucket:"zaachilamoto.firebasestorage.app",messagingSenderId:"559788509526",appId:"1:559788509526:web:c751d8d22068f09041aef7"};
 firebase.initializeApp(fb);
 const auth=firebase.auth(),db=firebase.database();
-let map,markers=[];
-const ZA=[16.9516,-96.7491];
 
-// LOGIN
 function login(){
     const e=document.getElementById('email').value,p=document.getElementById('password').value;
     const err=document.getElementById('loginError'),btn=document.getElementById('loginBtn');
@@ -230,41 +171,15 @@ function login(){
     auth.signInWithEmailAndPassword(e,p).then(u=>{
         document.getElementById('loginScreen').style.display='none';
         document.getElementById('dashboard').style.display='block';
-        document.getElementById('adminName').textContent=u.user.email;
-        initMap();loadAll();
+        document.getElementById('adminName').textContent=u.user.email.split('@')[0];
+        loadAll();
     }).catch(er=>{
-        err.textContent=er.code==='auth/wrong-password'?'Contraseña incorrecta':'Error al ingresar';
-        err.style.display='block';btn.disabled=false;btn.textContent='Ingresar';
+        err.textContent='Error: '+er.message;err.style.display='block';btn.disabled=false;btn.textContent='Ingresar';
     })
 }
 
-auth.onAuthStateChanged(u=>{if(u){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('adminName').textContent=u.user.email;initMap();loadAll()}});
+auth.onAuthStateChanged(u=>{if(u){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';loadAll()}});
 
-// MAPA
-function initMap(){
-    setTimeout(()=>{
-        if(map)map.remove();
-        map=L.map('liveMap',{zoomControl:true,attributionControl:false}).setView(ZA,15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-        L.marker(ZA,{icon:L.divIcon({html:'<div style="background:#6C5CE7;color:#fff;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700">📍 Zaachila</div>',iconSize:[100,24]})}).addTo(map);
-        db.ref('choferes').on('value',s=>updateMap(s.val()));
-    },500);
-}
-
-function updateMap(ch){
-    markers.forEach(m=>map.removeLayer(m));markers=[];
-    if(!ch)return;
-    Object.entries(ch).forEach(([id,c])=>{
-        if(c.ubicacion&&c.estado==='activo'){
-            const cl=c.estado==='en_servicio'?'#FFA502':'#00C897';
-            const mk=L.marker([c.ubicacion.lat,c.ubicacion.lng],{icon:L.divIcon({html:`<div style="background:${cl};color:#000;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700">🏍️ ${(c.nombre||'').split(' ')[0]}</div>`,iconSize:[70,22],iconAnchor:[35,11]})}).addTo(map);
-            mk.bindPopup(`<b>${c.nombre||'Chofer'}</b><br>📧 ${c.email||''}<br>🏍️ ${c.placa||''}<br>📱 ${c.telefono||''}`);
-            markers.push(mk);
-        }
-    })
-}
-
-// LOAD
 function loadAll(){loadStats();loadDrivers();loadServices();loadReports();loadFinances()}
 
 function loadStats(){
@@ -272,46 +187,40 @@ function loadStats(){
     db.ref('servicios').orderByChild('estado').equalTo('en_servicio').on('value',s=>document.getElementById('stServices').textContent=s.numChildren());
     const hoy=new Date().toISOString().split('T')[0];
     db.ref(`admin/ganancias/${hoy}`).on('value',s=>document.getElementById('stEarnings').textContent='$'+(s.val()||0));
-    db.ref('servicios').orderByChild('estado').equalTo('completado').on('value',s=>{let c=0;s.forEach(ch=>{if(ch.val().fecha===hoy)c++});document.getElementById('stTotal').textContent=c})
+    db.ref('servicios').orderByChild('estado').equalTo('completado').on('value',s=>{let c=0;s.forEach(ch=>{if(ch.val().fecha===hoy)c++});document.getElementById('stCompleted').textContent=c})
 }
 
 function loadDrivers(){
     db.ref('choferes').once('value',s=>{
         const d=s.val();let h='';
-        if(!d){document.getElementById('driversBody').innerHTML='<tr><td colspan="6" style="text-align:center">Sin choferes</td></tr>';return}
+        if(!d){document.getElementById('driversBody').innerHTML='<tr><td colspan="6">Sin choferes</td></tr>';return}
         Object.entries(d).forEach(([id,c])=>{
-            const b=c.estado==='activo'?'badge-g':c.estado==='suspendido'?'badge-r':c.estado==='en_servicio'?'badge-y':'badge-b';
-            h+=`<tr><td>${c.nombre||'-'}</td><td>${c.email||'-'}</td><td>${c.placa||'-'}</td><td><span class="badge ${b}">${c.estado||'inactivo'}</span></td><td>${c.calificacion||'0'}</td>
-            <td style="display:flex;gap:3px">
-                <button class="btn-sm" onclick="editD('${id}')">✏️</button>
-                <button class="btn-sm" onclick="resetP('${id}')">🔑</button>
-                <button class="btn-sm" onclick="delD('${id}')">🗑️</button>
-            </td></tr>`
+            const b=c.estado==='activo'?'badge-g':c.estado==='suspendido'?'badge-r':'badge-y';
+            h+=`<tr><td>${c.nombre||'-'}</td><td>${c.email||'-'}</td><td>${c.placa||'-'}</td><td><span class="badge ${b}">${c.estado||'-'}</span></td><td>${c.calificacion||'0'}</td>
+            <td><button class="btn-sm" onclick="editD('${id}')">✏️</button> <button class="btn-sm" onclick="resetP('${id}')">🔑</button> <button class="btn-sm" onclick="delD('${id}')">🗑️</button></td></tr>`
         });
         document.getElementById('driversBody').innerHTML=h
     })
 }
 
-// CRUD CHOFeRES
 function addDriver(){
     const m=document.getElementById('modalContainer');
-    m.innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>➕ Nuevo Chofer</h3>
-        <input class="inp" id="dName" placeholder="Nombre completo"><input class="inp" id="dEmail" placeholder="Email"><input class="inp" id="dPass" placeholder="Contraseña (6+)" type="password"><input class="inp" id="dPlaca" placeholder="Placa"><input class="inp" id="dTel" placeholder="Teléfono">
+    m.innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>Nuevo Chofer</h3>
+        <input class="inp" id="dName" placeholder="Nombre"><input class="inp" id="dEmail" placeholder="Email"><input class="inp" id="dPass" placeholder="Contraseña" type="password"><input class="inp" id="dPlaca" placeholder="Placa"><input class="inp" id="dTel" placeholder="Teléfono">
         <div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveD()">Guardar</button></div>
     </div></div>`
 }
 
 function saveD(){
     const n=document.getElementById('dName').value.trim(),e=document.getElementById('dEmail').value.trim(),p=document.getElementById('dPass').value,pl=document.getElementById('dPlaca').value.trim(),t=document.getElementById('dTel').value.trim();
-    if(!n||!e||!p){toast('Nombre, email y contraseña obligatorios');return}
-    if(p.length<6){toast('Contraseña: mínimo 6 caracteres');return}
-    auth.createUserWithEmailAndPassword(e,p).then(u=>db.ref(`choferes/${u.user.uid}`).set({nombre:n,email:e,placa:pl,telefono:t,estado:'inactivo',calificacion:0,total_servicios:0,fecha_registro:new Date().toISOString(),ubicacion:{lat:ZA[0],lng:ZA[1]}})).then(()=>{closeM();toast('✅ Chofer creado');loadDrivers()}).catch(er=>toast('Error: '+er.message))
+    if(!n||!e||!p){toast('Campos obligatorios');return}
+    auth.createUserWithEmailAndPassword(e,p).then(u=>db.ref(`choferes/${u.user.uid}`).set({nombre:n,email:e,placa:pl,telefono:t,estado:'inactivo',calificacion:0,total_servicios:0})).then(()=>{closeM();toast('Creado');loadDrivers()}).catch(er=>toast(er.message))
 }
 
 function editD(id){
     db.ref(`choferes/${id}`).once('value',s=>{
         const c=s.val();
-        document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>✏️ Editar</h3>
+        document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>Editar</h3>
             <input class="inp" id="eName" value="${c.nombre||''}"><input class="inp" id="ePlaca" value="${c.placa||''}"><input class="inp" id="eTel" value="${c.telefono||''}">
             <div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveE('${id}')">Guardar</button></div>
         </div></div>`
@@ -319,14 +228,13 @@ function editD(id){
 }
 
 function saveE(id){
-    const n=document.getElementById('eName').value.trim(),pl=document.getElementById('ePlaca').value.trim(),t=document.getElementById('eTel').value.trim();
-    db.ref(`choferes/${id}`).update({nombre:n,placa:pl,telefono:t}).then(()=>{closeM();toast('✅ Actualizado');loadDrivers()})
+    db.ref(`choferes/${id}`).update({nombre:document.getElementById('eName').value.trim(),placa:document.getElementById('ePlaca').value.trim(),telefono:document.getElementById('eTel').value.trim()}).then(()=>{closeM();toast('Actualizado');loadDrivers()})
 }
 
 function resetP(id){
     db.ref(`choferes/${id}`).once('value',s=>{
         const c=s.val();
-        document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>🔑 Restablecer</h3><p style="font-size:.85rem;color:var(--txt2);margin-bottom:.8rem">${c.nombre} - ${c.email}</p>
+        document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>Restablecer</h3><p style="font-size:.8rem;color:var(--txt2);margin-bottom:.6rem">${c.nombre} - ${c.email}</p>
             <input class="inp" id="rpPass" placeholder="Nueva contraseña" type="password"><input class="inp" id="rpPass2" placeholder="Confirmar" type="password">
             <div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveP('${id}','${c.email}','${c.nombre}')">Guardar</button></div>
         </div></div>`
@@ -338,16 +246,15 @@ function saveP(id,email,nombre){
     if(!p||p.length<6){toast('Mínimo 6 caracteres');return}
     if(p!==p2){toast('No coinciden');return}
     db.ref('admin/reset_passwords').push({choferId:id,email,nombre,nuevaPassword:p,ts:firebase.database.ServerValue.TIMESTAMP});
-    closeM();toast('✅ Solicitud registrada')
+    closeM();toast('Registrado')
 }
 
 function delD(id){
-    document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()" style="text-align:center"><h3>⚠️ ¿Eliminar?</h3><p style="margin-bottom:1rem;color:var(--txt2)">Esta acción no se puede deshacer</p><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">No</button><button class="btn" style="background:var(--red)" onclick="confirmDel('${id}')">Eliminar</button></div></div></div>`
+    document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()" style="text-align:center"><h3>¿Eliminar?</h3><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">No</button><button class="btn" style="background:var(--red)" onclick="confirmDel('${id}')">Eliminar</button></div></div></div>`
 }
 
 function confirmDel(id){db.ref(`choferes/${id}`).remove().then(()=>{closeM();toast('Eliminado');loadDrivers()})}
 
-// SERVICIOS
 function loadServices(){
     db.ref('servicios').limitToLast(20).once('value',s=>{
         const d=s.val();let h='';
@@ -360,83 +267,55 @@ function loadServices(){
     })
 }
 
-// REPORTES
 function loadReports(){
     db.ref('reportes/objetos_olvidados').limitToLast(15).once('value',s=>{
         const d=s.val();let h='';
         if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="4">Sin reportes</td></tr>';return}
-        Object.entries(d).reverse().forEach(([id,r])=>{
-            h+=`<tr><td>${new Date(r.timestamp).toLocaleDateString()}</td><td>${(r.descripcion||'').substring(0,30)}</td><td><span class="badge ${r.estado==='resuelto'?'badge-g':'badge-y'}">${r.estado||'pendiente'}</span></td><td><button class="btn-sm" onclick="resolveR('${id}')">✓</button></td></tr>`
-        });
+        Object.entries(d).reverse().forEach(([id,r])=>{h+=`<tr><td>${new Date(r.timestamp).toLocaleDateString()}</td><td>${(r.descripcion||'').substring(0,30)}</td><td><span class="badge ${r.estado==='resuelto'?'badge-g':'badge-y'}">${r.estado||'pendiente'}</span></td><td><button class="btn-sm" onclick="resolveR('${id}')">✓</button></td></tr>`});
         document.getElementById('reportsBody').innerHTML=h
     })
 }
 
-function resolveR(id){db.ref(`reportes/objetos_olvidados/${id}`).update({estado:'resuelto',fecha_resolucion:new Date().toISOString()}).then(()=>{toast('Resuelto');loadReports()})}
+function resolveR(id){db.ref(`reportes/objetos_olvidados/${id}`).update({estado:'resuelto'}).then(()=>{toast('Resuelto');loadReports()})}
 
-// FINANZAS
 function loadFinances(){
     db.ref('admin/comisiones').limitToLast(20).once('value',s=>{
         const d=s.val();let h='',t=0,m=0;const hoy=new Date().toISOString().split('T')[0];
         if(!d){document.getElementById('commissionsBody').innerHTML='<tr><td colspan="4">Sin datos</td></tr>';return}
-        Object.entries(d).reverse().forEach(([id,c])=>{
-            if(c.fecha===hoy)t+=c.comision||0;m+=c.comision||0;
-            h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`
-        });
+        Object.entries(d).reverse().forEach(([id,c])=>{if(c.fecha===hoy)t+=c.comision||0;m+=c.comision||0;h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`});
         document.getElementById('finToday').textContent='$'+t;document.getElementById('finMonth').textContent='$'+m;
         document.getElementById('commissionsBody').innerHTML=h
     })
 }
 
-// EXPORT / IMPORT
 function exportData(){
     db.ref('/').once('value',s=>{
         const data=JSON.stringify(s.val(),null,2);
         const blob=new Blob([data],{type:'application/json'});
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement('a');a.href=url;a.download='zaachila_moto_backup_'+new Date().toISOString().split('T')[0]+'.json';
-        a.click();URL.revokeObjectURL(url);
-        toast('📥 Datos exportados')
+        const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zaachila_backup_'+new Date().toISOString().split('T')[0]+'.json';a.click();
+        toast('Exportado')
     })
 }
 
 function importData(){
-    document.getElementById('jsonEditor').style.display='block'
-}
-
-function cancelImport(){
-    document.getElementById('jsonEditor').style.display='none';
-    document.getElementById('jsonText').value=''
+    document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>Importar JSON</h3><textarea id="jsonText" placeholder="Pega el JSON aquí..."></textarea><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="confirmImport()">Importar</button></div></div></div>`
 }
 
 function confirmImport(){
-    const text=document.getElementById('jsonText').value.trim();
-    if(!text){toast('Pega el JSON primero');return}
     try{
-        const data=JSON.parse(text);
-        if(confirm('⚠️ Esto SOBRESCRIBIRÁ todos los datos actuales. ¿Continuar?')){
-            db.ref('/').set(data).then(()=>{
-                toast('✅ Datos importados correctamente');
-                cancelImport();loadAll();initMap()
-            }).catch(er=>toast('Error: '+er.message))
-        }
-    }catch(e){toast('❌ JSON inválido: '+e.message)}
+        const data=JSON.parse(document.getElementById('jsonText').value.trim());
+        if(confirm('¿Sobrescribir todos los datos?')){db.ref('/').set(data).then(()=>{closeM();toast('Importado');loadAll()})}
+    }catch(e){toast('JSON inválido')}
 }
 
-// UTILIDADES
 function tab(name,el){
     document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');
     const tb=document.getElementById('tab-'+name);if(tb)tb.style.display='block';
-    document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('on'));
-    el.classList.add('on');
-    if(name==='drivers')loadDrivers();if(name==='services')loadServices();
-    if(name==='reports')loadReports();if(name==='finances')loadFinances();
-    if(name==='overview')initMap()
+    document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('on'));el.classList.add('on');
 }
 
 function closeM(){document.getElementById('modalContainer').innerHTML=''}
-function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2500)}
-
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000)}
 document.addEventListener('keypress',e=>{if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none')login()});
 </script>
 </body>
