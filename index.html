@@ -25,18 +25,13 @@
             --glass: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --gradient: linear-gradient(135deg, #2D1B69, #4A3A8A);
             --success: #10B981;
             --warning: #F59E0B;
             --danger: #EF4444;
             --info: #3B82F6;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -46,7 +41,7 @@
             overflow-x: hidden;
         }
 
-        /* Login Screen */
+        /* LOGIN SCREEN */
         .login-screen {
             display: flex;
             justify-content: center;
@@ -66,16 +61,22 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        .login-container h1 {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-        }
-
         .login-container .logo-login {
             text-align: center;
             font-size: 4rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .login-container p {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.8;
         }
 
         .form-group {
@@ -123,6 +124,11 @@
             box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
         }
 
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .error-message {
             background: rgba(239, 68, 68, 0.2);
             border: 1px solid #EF4444;
@@ -132,14 +138,13 @@
             display: none;
         }
 
-        /* Dashboard (oculto hasta login) */
+        /* DASHBOARD */
         .dashboard-container {
             display: none;
         }
 
-        /* Header */
         .admin-header {
-            background: var(--gradient);
+            background: linear-gradient(135deg, #2D1B69, #4A3A8A);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
@@ -156,31 +161,30 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
         }
 
-        .logo-icon {
-            font-size: 2.5rem;
-        }
+        .logo-icon { font-size: 2.2rem; }
 
         .header-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 0.7rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .btn-glass {
@@ -194,36 +198,21 @@
             transform: translateY(-2px);
         }
 
-        .btn-primary {
-            background: #FF6B35;
-            color: white;
-        }
+        .btn-primary { background: #FF6B35; color: white; }
+        .btn-primary:hover { background: #ff8c5a; transform: translateY(-2px); }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-success { background: #10B981; color: white; }
+        .btn-warning { background: #F59E0B; color: #000; }
+        .btn-info { background: #3B82F6; color: white; }
 
-        .btn-primary:hover {
-            background: #ff8c5a;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #EF4444;
-            color: white;
-        }
-
-        .btn-success {
-            background: #10B981;
-            color: white;
-        }
-
-        /* Dashboard Grid */
         .dashboard {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 260px 1fr;
             gap: 1.5rem;
             padding: 1.5rem;
             min-height: calc(100vh - 80px);
         }
 
-        /* Sidebar */
         .sidebar {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -246,14 +235,15 @@
         }
 
         .menu-item {
-            padding: 1rem 1.5rem;
-            border-radius: 15px;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
         .menu-item:hover, .menu-item.active {
@@ -266,7 +256,6 @@
             box-shadow: 0 5px 20px rgba(255,107,53,0.3);
         }
 
-        /* Main Content */
         .main-content {
             display: flex;
             flex-direction: column;
@@ -276,16 +265,16 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
         }
 
         .stat-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 1.8rem;
+            border-radius: 18px;
+            padding: 1.5rem;
             transition: all 0.3s ease;
         }
 
@@ -301,23 +290,12 @@
             margin-bottom: 1rem;
         }
 
-        .stat-icon {
-            font-size: 2.5rem;
-        }
+        .stat-icon { font-size: 2.2rem; }
+        .stat-value { font-size: 2.2rem; font-weight: 800; }
+        .stat-label { font-size: 0.9rem; opacity: 0.7; }
 
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.7;
-        }
-
-        /* Map Container */
         .map-container {
-            height: 500px;
+            height: 450px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -325,12 +303,8 @@
             overflow: hidden;
         }
 
-        #liveMap {
-            height: 100%;
-            width: 100%;
-        }
+        #liveMap { height: 100%; width: 100%; }
 
-        /* Panel Container */
         .panel {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -339,10 +313,12 @@
             padding: 1.5rem;
         }
 
-        /* Tables */
-        .table-container {
-            overflow-x: auto;
+        .panel h2 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
         }
+
+        .table-container { overflow-x: auto; }
 
         table {
             width: 100%;
@@ -351,25 +327,26 @@
 
         th {
             background: rgba(255,255,255,0.1);
-            padding: 1rem;
+            padding: 0.8rem;
             text-align: left;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         td {
-            padding: 1rem;
+            padding: 0.8rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
         }
 
         tr:hover td {
             background: rgba(255,255,255,0.05);
         }
 
-        /* Badges */
         .badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
@@ -378,11 +355,10 @@
         .badge-danger { background: #EF4444; color: white; }
         .badge-info { background: #3B82F6; color: white; }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 2rem;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .loading::after {
@@ -396,7 +372,61 @@
             60%, 100% { content: '...'; }
         }
 
-        /* Responsive */
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #1a1a2e, #2d1b69);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .modal .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .modal .form-control:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
         @media (max-width: 968px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -419,11 +449,11 @@
             }
             
             .menu-item {
-                padding: 0.5rem 1rem;
-                font-size: 0.8rem;
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
                 white-space: nowrap;
             }
-            
+
             .main-content {
                 padding-bottom: 80px;
             }
@@ -431,12 +461,12 @@
     </style>
 </head>
 <body>
-    <!-- LOGIN SCREEN -->
+    <!-- ============ LOGIN SCREEN ============ -->
     <div id="loginScreen" class="login-screen">
         <div class="login-container">
             <div class="logo-login">🏍️</div>
             <h1>Zaachila Moto</h1>
-            <p style="text-align:center;margin-bottom:2rem;opacity:0.8;">Panel de Administración</p>
+            <p>Panel de Administración</p>
             
             <div id="loginError" class="error-message"></div>
             
@@ -453,52 +483,34 @@
             <button onclick="loginAdmin()" class="btn-login" id="loginBtn">
                 🔐 Iniciar Sesión
             </button>
-            
-            <p style="text-align:center;margin-top:1rem;font-size:0.9rem;opacity:0.6;">
-                Acceso exclusivo para administradores
-            </p>
         </div>
     </div>
 
-    <!-- DASHBOARD (oculto hasta login) -->
+    <!-- ============ DASHBOARD ============ -->
     <div id="dashboardContainer" class="dashboard-container">
         <!-- Header -->
         <header class="admin-header">
             <div class="logo">
                 <span class="logo-icon">🏍️</span>
-                <span>Zaachila Moto</span>
+                <span>Zaachila Moto Admin</span>
             </div>
             <div class="header-actions">
-                <button class="btn btn-glass" onclick="location.reload()">
-                    🔄 Actualizar
-                </button>
+                <button class="btn btn-glass" onclick="location.reload()">🔄 Actualizar</button>
                 <span id="adminName" style="font-weight:600;">Admin</span>
-                <button class="btn btn-danger" onclick="logoutAdmin()">
-                    🚪 Salir
-                </button>
+                <button class="btn btn-danger" onclick="logoutAdmin()">🚪 Salir</button>
             </div>
         </header>
 
-        <!-- Dashboard -->
+        <!-- Dashboard Grid -->
         <div class="dashboard">
             <!-- Sidebar -->
             <nav class="sidebar">
                 <ul class="sidebar-menu">
-                    <li class="menu-item active" onclick="switchTab('overview', this)">
-                        📊 Dashboard
-                    </li>
-                    <li class="menu-item" onclick="switchTab('drivers', this)">
-                        🏍️ Choferes
-                    </li>
-                    <li class="menu-item" onclick="switchTab('services', this)">
-                        📋 Servicios
-                    </li>
-                    <li class="menu-item" onclick="switchTab('reports', this)">
-                        📝 Reportes
-                    </li>
-                    <li class="menu-item" onclick="switchTab('finances', this)">
-                        💰 Finanzas
-                    </li>
+                    <li class="menu-item active" onclick="switchTab('overview', this)">📊 Dashboard</li>
+                    <li class="menu-item" onclick="switchTab('drivers', this)">🏍️ Choferes</li>
+                    <li class="menu-item" onclick="switchTab('services', this)">📋 Servicios</li>
+                    <li class="menu-item" onclick="switchTab('reports', this)">📝 Reportes</li>
+                    <li class="menu-item" onclick="switchTab('finances', this)">💰 Finanzas</li>
                 </ul>
             </nav>
 
@@ -506,14 +518,13 @@
             <main class="main-content">
                 <!-- TAB: Overview -->
                 <div id="tab-overview">
-                    <!-- Stats -->
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-header">
                                 <span class="stat-icon">🏍️</span>
                                 <span class="badge badge-success">Activos</span>
                             </div>
-                            <div class="stat-value" id="activeDrivers">-</div>
+                            <div class="stat-value" id="activeDrivers">0</div>
                             <div class="stat-label">Choferes activos</div>
                         </div>
                         <div class="stat-card">
@@ -521,7 +532,7 @@
                                 <span class="stat-icon">📋</span>
                                 <span class="badge badge-warning">En curso</span>
                             </div>
-                            <div class="stat-value" id="activeServices">-</div>
+                            <div class="stat-value" id="activeServices">0</div>
                             <div class="stat-label">Servicios activos</div>
                         </div>
                         <div class="stat-card">
@@ -529,7 +540,7 @@
                                 <span class="stat-icon">💰</span>
                                 <span class="badge badge-success">Hoy</span>
                             </div>
-                            <div class="stat-value" id="todayEarnings">-</div>
+                            <div class="stat-value" id="todayEarnings">$0</div>
                             <div class="stat-label">Ganancias del día</div>
                         </div>
                         <div class="stat-card">
@@ -537,12 +548,11 @@
                                 <span class="stat-icon">✅</span>
                                 <span class="badge badge-info">Total</span>
                             </div>
-                            <div class="stat-value" id="totalServices">-</div>
-                            <div class="stat-label">Servicios completados hoy</div>
+                            <div class="stat-value" id="totalServices">0</div>
+                            <div class="stat-label">Servicios hoy</div>
                         </div>
                     </div>
 
-                    <!-- Live Map -->
                     <div class="map-container">
                         <div id="liveMap"></div>
                     </div>
@@ -551,27 +561,26 @@
                 <!-- TAB: Drivers -->
                 <div id="tab-drivers" style="display:none;">
                     <div class="panel">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
                             <h2>🏍️ Gestión de Choferes</h2>
-                            <button class="btn btn-primary" onclick="addDriverForm()">
-                                ➕ Registrar Chofer
-                            </button>
+                            <button class="btn btn-primary" onclick="showAddDriverModal()">➕ Registrar Chofer</button>
                         </div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
+                                        <th>Email</th>
                                         <th>Placa</th>
                                         <th>Teléfono</th>
                                         <th>Estado</th>
-                                        <th>Calificación</th>
+                                        <th>Calif.</th>
                                         <th>Servicios</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="driversTableBody">
-                                    <tr><td colspan="7" class="loading">Cargando choferes</td></tr>
+                                    <tr><td colspan="8" class="loading">Cargando choferes</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -581,7 +590,7 @@
                 <!-- TAB: Services -->
                 <div id="tab-services" style="display:none;">
                     <div class="panel">
-                        <h2 style="margin-bottom:1rem;">📋 Servicios en Tiempo Real</h2>
+                        <h2>📋 Servicios en Tiempo Real</h2>
                         <div class="table-container">
                             <table>
                                 <thead>
@@ -606,14 +615,14 @@
                 <!-- TAB: Reports -->
                 <div id="tab-reports" style="display:none;">
                     <div class="panel">
-                        <h2 style="margin-bottom:1rem;">📝 Reportes de Objetos Olvidados</h2>
+                        <h2>📝 Reportes de Objetos</h2>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
                                         <th>Fecha</th>
                                         <th>Servicio</th>
-                                        <th>Reportado por</th>
+                                        <th>Tipo</th>
                                         <th>Descripción</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
@@ -630,19 +639,19 @@
                 <!-- TAB: Finances -->
                 <div id="tab-finances" style="display:none;">
                     <div class="panel">
-                        <h2 style="margin-bottom:1rem;">💰 Finanzas y Comisiones</h2>
+                        <h2>💰 Finanzas y Comisiones</h2>
                         <div class="stats-grid" style="margin-bottom:1.5rem;">
                             <div class="stat-card">
                                 <div class="stat-label">Comisiones Hoy</div>
-                                <div class="stat-value" style="font-size:2rem;" id="todayCommissions">-</div>
+                                <div class="stat-value" style="font-size:1.8rem;" id="todayCommissions">$0</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-label">Comisiones Semana</div>
-                                <div class="stat-value" style="font-size:2rem;" id="weekCommissions">-</div>
+                                <div class="stat-value" style="font-size:1.8rem;" id="weekCommissions">$0</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-label">Comisiones Mes</div>
-                                <div class="stat-value" style="font-size:2rem;" id="monthCommissions">-</div>
+                                <div class="stat-value" style="font-size:1.8rem;" id="monthCommissions">$0</div>
                             </div>
                         </div>
                         <div class="table-container">
@@ -652,7 +661,7 @@
                                         <th>Fecha</th>
                                         <th>Servicio</th>
                                         <th>Chofer</th>
-                                        <th>Monto Servicio</th>
+                                        <th>Monto</th>
                                         <th>Comisión (10%)</th>
                                     </tr>
                                 </thead>
@@ -667,8 +676,11 @@
         </div>
     </div>
 
+    <!-- ============ MODAL CONTAINER ============ -->
+    <div id="modalContainer"></div>
+
     <script>
-        // ========== CONFIGURACIÓN DE FIREBASE ==========
+        // ========== CONFIGURACIÓN FIREBASE ==========
         const firebaseConfig = {
             apiKey: "AIzaSyCBXBPMz2OZ3U2KfTaU-uHCBhwmbnR7O40",
             authDomain: "zaachilamoto.firebaseapp.com",
@@ -679,12 +691,11 @@
             appId: "1:559788509526:web:c751d8d22068f09041aef7"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // ========== VARIABLES GLOBALES ==========
+        // ========== VARIABLES ==========
         let map;
         let driversMarkers = [];
         const VILLA_ZAACHILA = [16.9516, -96.7491];
@@ -697,7 +708,7 @@
             const loginBtn = document.getElementById('loginBtn');
 
             if (!email || !password) {
-                errorDiv.textContent = '❌ Por favor completa todos los campos';
+                errorDiv.textContent = '❌ Completa todos los campos';
                 errorDiv.style.display = 'block';
                 return;
             }
@@ -712,18 +723,11 @@
                     showDashboard(userCredential.user);
                 })
                 .catch((error) => {
-                    console.error('❌ Error de login:', error);
+                    console.error('❌ Error:', error);
                     let mensaje = 'Error al iniciar sesión';
-                    
-                    if (error.code === 'auth/user-not-found') {
-                        mensaje = '❌ Usuario no encontrado. Verifica el email.';
-                    } else if (error.code === 'auth/wrong-password') {
-                        mensaje = '❌ Contraseña incorrecta.';
-                    } else if (error.code === 'auth/invalid-email') {
-                        mensaje = '❌ Email no válido.';
-                    } else if (error.code === 'auth/too-many-requests') {
-                        mensaje = '❌ Demasiados intentos. Espera un momento.';
-                    }
+                    if (error.code === 'auth/user-not-found') mensaje = '❌ Usuario no encontrado';
+                    else if (error.code === 'auth/wrong-password') mensaje = '❌ Contraseña incorrecta';
+                    else if (error.code === 'auth/too-many-requests') mensaje = '❌ Demasiados intentos. Espera.';
                     
                     errorDiv.textContent = mensaje;
                     errorDiv.style.display = 'block';
@@ -737,7 +741,6 @@
             document.getElementById('dashboardContainer').style.display = 'block';
             document.getElementById('adminName').textContent = user.email;
             
-            // Inicializar mapa y datos
             initMap();
             loadAllData();
             startRealTimeListeners();
@@ -751,39 +754,33 @@
             });
         }
 
-        // Verificar si ya hay sesión activa
         auth.onAuthStateChanged((user) => {
-            if (user) {
-                showDashboard(user);
-            }
+            if (user) showDashboard(user);
         });
 
-        // Login con Enter
         document.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
                 loginAdmin();
             }
         });
 
-        // ========== INICIALIZAR MAPA ==========
+        // ========== MAPA ==========
         function initMap() {
             map = L.map('liveMap').setView(VILLA_ZAACHILA, 15);
-            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+                attribution: '© OpenStreetMap'
             }).addTo(map);
             
-            // Marcador de Villa de Zaachila
             L.marker(VILLA_ZAACHILA, {
                 icon: L.divIcon({
                     className: 'town-marker',
-                    html: '<div style="background:#2D1B69;color:white;padding:8px 15px;border-radius:20px;font-weight:700;font-size:14px;">📍 Villa de Zaachila</div>',
+                    html: '<div style="background:#2D1B69;color:white;padding:8px 15px;border-radius:20px;font-weight:700;">📍 Villa de Zaachila</div>',
                     iconSize: [160, 35]
                 })
             }).addTo(map);
         }
 
-        // ========== CARGAR DATOS INICIALES ==========
+        // ========== CARGAR DATOS ==========
         function loadAllData() {
             loadDrivers();
             loadServices();
@@ -795,88 +792,52 @@
         function loadStats() {
             const hoy = new Date().toISOString().split('T')[0];
             
-            // Choferes activos
             database.ref('choferes').orderByChild('estado').equalTo('activo')
-                .on('value', (snapshot) => {
-                    const count = snapshot.numChildren();
-                    document.getElementById('activeDrivers').textContent = count;
+                .on('value', (snap) => {
+                    document.getElementById('activeDrivers').textContent = snap.numChildren();
                 });
 
-            // Servicios activos
             database.ref('servicios').orderByChild('estado').equalTo('en_servicio')
-                .on('value', (snapshot) => {
-                    const count = snapshot.numChildren();
-                    document.getElementById('activeServices').textContent = count;
+                .on('value', (snap) => {
+                    document.getElementById('activeServices').textContent = snap.numChildren();
                 });
 
-            // Ganancias del día
-            database.ref(`admin/ganancias/${hoy}`).on('value', (snapshot) => {
-                const ganancias = snapshot.val() || 0;
-                document.getElementById('todayEarnings').textContent = `$${ganancias}`;
+            database.ref(`admin/ganancias/${hoy}`).on('value', (snap) => {
+                document.getElementById('todayEarnings').textContent = '$' + (snap.val() || 0);
             });
 
-            // Total servicios hoy
             database.ref('servicios').orderByChild('estado').equalTo('completado')
-                .on('value', (snapshot) => {
+                .on('value', (snap) => {
                     let count = 0;
-                    snapshot.forEach((child) => {
-                        const servicio = child.val();
-                        if (servicio.fecha === hoy) count++;
+                    snap.forEach((child) => {
+                        if (child.val().fecha === hoy) count++;
                     });
                     document.getElementById('totalServices').textContent = count;
                 });
         }
 
-        // ========== ESCUCHAR EN TIEMPO REAL ==========
         function startRealTimeListeners() {
-            // Escuchar cambios en choferes (ubicaciones)
-            database.ref('choferes').on('value', (snapshot) => {
-                updateDriversOnMap(snapshot.val());
-            });
-
-            // Escuchar nuevos servicios
-            database.ref('servicios').on('child_added', (snapshot) => {
-                console.log('📋 Nuevo servicio:', snapshot.key);
-                loadServices();
-                loadStats();
-            });
-
-            // Escuchar cambios en servicios
-            database.ref('servicios').on('child_changed', (snapshot) => {
-                console.log('🔄 Servicio actualizado:', snapshot.key);
-                loadServices();
-                loadStats();
+            database.ref('choferes').on('value', (snap) => {
+                updateDriversOnMap(snap.val());
             });
         }
 
-        // ========== ACTUALIZAR CHOFERES EN MAPA ==========
         function updateDriversOnMap(choferes) {
-            // Limpiar marcadores anteriores
-            driversMarkers.forEach(marker => map.removeLayer(marker));
+            driversMarkers.forEach(m => map.removeLayer(m));
             driversMarkers = [];
-
             if (!choferes) return;
 
             Object.entries(choferes).forEach(([id, chofer]) => {
-                if (chofer.ubicacion && chofer.estado === 'activo') {
+                if (chofer.ubicacion) {
                     const color = chofer.estado === 'en_servicio' ? '#F59E0B' : '#10B981';
-                    
                     const marker = L.marker([chofer.ubicacion.lat, chofer.ubicacion.lng], {
                         icon: L.divIcon({
                             className: 'driver-marker',
-                            html: `<div style="background:${color};color:white;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:600;">🏍️ ${chofer.nombre || 'Chofer'}</div>`,
-                            iconSize: [100, 30]
+                            html: `<div style="background:${color};color:white;padding:4px 8px;border-radius:15px;font-size:11px;font-weight:600;">🏍️ ${chofer.nombre || ''}</div>`,
+                            iconSize: [90, 25]
                         })
                     }).addTo(map);
-
-                    marker.bindPopup(`
-                        <b>${chofer.nombre || 'Sin nombre'}</b><br>
-                        Placa: ${chofer.placa || 'N/A'}<br>
-                        Estado: ${chofer.estado}<br>
-                        Teléfono: ${chofer.telefono || 'N/A'}<br>
-                        <button onclick="contactDriver('${id}')" style="background:#FF6B35;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-top:5px;">Contactar</button>
-                    `);
-
+                    marker.bindPopup(`<b>${chofer.nombre || 'Chofer'}</b><br>Placa: ${chofer.placa || 'N/A'}<br>Estado: ${chofer.estado}`);
                     driversMarkers.push(marker);
                 }
             });
@@ -884,35 +845,38 @@
 
         // ========== CARGAR CHOFERES ==========
         function loadDrivers() {
-            database.ref('choferes').once('value', (snapshot) => {
-                const choferes = snapshot.val();
+            database.ref('choferes').once('value', (snap) => {
+                const choferes = snap.val();
                 const tbody = document.getElementById('driversTableBody');
                 
                 if (!choferes) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay choferes registrados</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay choferes registrados</td></tr>';
                     return;
                 }
 
                 let html = '';
                 Object.entries(choferes).forEach(([id, chofer]) => {
                     const estadoBadge = chofer.estado === 'activo' ? 'badge-success' : 
-                                       chofer.estado === 'suspendido' ? 'badge-danger' : 'badge-warning';
+                                       chofer.estado === 'suspendido' ? 'badge-danger' : 
+                                       chofer.estado === 'en_servicio' ? 'badge-warning' : 'badge-info';
                     
                     html += `
                         <tr>
                             <td>${chofer.nombre || 'Sin nombre'}</td>
+                            <td>${chofer.email || 'N/A'}</td>
                             <td>${chofer.placa || 'N/A'}</td>
                             <td>${chofer.telefono || 'N/A'}</td>
                             <td><span class="badge ${estadoBadge}">${chofer.estado || 'inactivo'}</span></td>
                             <td>⭐ ${chofer.calificacion || '0'}</td>
                             <td>${chofer.total_servicios || '0'}</td>
-                            <td>
-                                <button class="btn btn-glass" onclick="editDriver('${id}')" style="padding:0.3rem 0.8rem;">✏️</button>
-                                <button class="btn btn-danger" onclick="deleteDriver('${id}')" style="padding:0.3rem 0.8rem;">🗑️</button>
+                            <td style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+                                <button class="btn btn-glass" onclick="editDriver('${id}')" style="padding:0.3rem 0.6rem;font-size:0.8rem;" title="Editar">✏️</button>
+                                <button class="btn btn-warning" onclick="resetDriverPassword('${id}')" style="padding:0.3rem 0.6rem;font-size:0.8rem;" title="Restablecer contraseña">🔑</button>
                                 ${chofer.estado === 'activo' ? 
-                                    `<button class="btn btn-warning" onclick="suspendDriver('${id}')" style="padding:0.3rem 0.8rem;background:#F59E0B;color:black;">⏸️</button>` :
-                                    `<button class="btn btn-success" onclick="activateDriver('${id}')" style="padding:0.3rem 0.8rem;">✅</button>`
+                                    `<button class="btn btn-warning" onclick="suspendDriver('${id}')" style="padding:0.3rem 0.6rem;font-size:0.8rem;" title="Suspender">⏸️</button>` :
+                                    `<button class="btn btn-success" onclick="activateDriver('${id}')" style="padding:0.3rem 0.6rem;font-size:0.8rem;" title="Activar">✅</button>`
                                 }
+                                <button class="btn btn-danger" onclick="deleteDriver('${id}')" style="padding:0.3rem 0.6rem;font-size:0.8rem;" title="Eliminar">🗑️</button>
                             </td>
                         </tr>
                     `;
@@ -922,137 +886,70 @@
             });
         }
 
-        // ========== CARGAR SERVICIOS ==========
-        function loadServices() {
-            database.ref('servicios').limitToLast(20).once('value', (snapshot) => {
-                const servicios = snapshot.val();
-                const tbody = document.getElementById('servicesTableBody');
-                
-                if (!servicios) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay servicios registrados</td></tr>';
-                    return;
-                }
-
-                let html = '';
-                Object.entries(servicios).reverse().forEach(([id, servicio]) => {
-                    const estadoBadge = servicio.estado === 'completado' ? 'badge-success' :
-                                       servicio.estado === 'cancelado' ? 'badge-danger' :
-                                       servicio.estado === 'en_servicio' ? 'badge-warning' : 'badge-info';
-                    
-                    html += `
-                        <tr>
-                            <td>#${id.substring(0, 6)}</td>
-                            <td>${servicio.clienteId ? servicio.clienteId.substring(0, 6) : 'N/A'}</td>
-                            <td>${servicio.choferId ? servicio.choferId.substring(0, 6) : 'Pendiente'}</td>
-                            <td>${servicio.origen?.direccion || 'N/A'}</td>
-                            <td>${servicio.destino?.direccion || 'N/A'}</td>
-                            <td><span class="badge ${estadoBadge}">${servicio.estado}</span></td>
-                            <td>$${servicio.tarifa_estimada || '0'}</td>
-                        </tr>
-                    `;
-                });
-                
-                tbody.innerHTML = html;
-            });
+        // ========== AGREGAR CHOFER ==========
+        function showAddDriverModal() {
+            const modal = document.getElementById('modalContainer');
+            modal.innerHTML = `
+                <div class="modal-overlay" onclick="closeModal()">
+                    <div class="modal" onclick="event.stopPropagation()">
+                        <h3>➕ Registrar Nuevo Chofer</h3>
+                        <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="newDriverName" class="form-control" placeholder="Ej: Juan Pérez">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="newDriverEmail" class="form-control" placeholder="chofer@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="newDriverPassword" class="form-control" placeholder="Mínimo 6 caracteres">
+                        </div>
+                        <div class="form-group">
+                            <label>Placa del Mototaxi</label>
+                            <input type="text" id="newDriverPlaca" class="form-control" placeholder="Ej: XYZ-123">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" id="newDriverTelefono" class="form-control" placeholder="Ej: 9511234567">
+                        </div>
+                        <div class="modal-buttons">
+                            <button class="btn btn-glass" onclick="closeModal()">Cancelar</button>
+                            <button class="btn btn-primary" onclick="saveNewDriver()">💾 Guardar Chofer</button>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        // ========== CARGAR REPORTES ==========
-        function loadReports() {
-            database.ref('reportes/objetos_olvidados').limitToLast(20).once('value', (snapshot) => {
-                const reportes = snapshot.val();
-                const tbody = document.getElementById('reportsTableBody');
-                
-                if (!reportes) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay reportes</td></tr>';
-                    return;
-                }
+        function saveNewDriver() {
+            const nombre = document.getElementById('newDriverName').value.trim();
+            const email = document.getElementById('newDriverEmail').value.trim();
+            const password = document.getElementById('newDriverPassword').value;
+            const placa = document.getElementById('newDriverPlaca').value.trim();
+            const telefono = document.getElementById('newDriverTelefono').value.trim();
 
-                let html = '';
-                Object.entries(reportes).reverse().forEach(([id, reporte]) => {
-                    html += `
-                        <tr>
-                            <td>${new Date(reporte.timestamp).toLocaleDateString()}</td>
-                            <td>#${reporte.servicioId?.substring(0, 6) || 'N/A'}</td>
-                            <td>${reporte.clienteId ? 'Cliente' : 'Chofer'}</td>
-                            <td>${reporte.descripcion || 'Sin descripción'}</td>
-                            <td><span class="badge ${reporte.estado === 'resuelto' ? 'badge-success' : 'badge-warning'}">${reporte.estado || 'pendiente'}</span></td>
-                            <td>
-                                <button class="btn btn-success" onclick="resolveReport('${id}')" style="padding:0.3rem 0.8rem;">✔️ Resolver</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                tbody.innerHTML = html;
-            });
-        }
+            if (!nombre || !email || !password) {
+                alert('⚠️ Nombre, email y contraseña son obligatorios');
+                return;
+            }
 
-        // ========== CARGAR FINANZAS ==========
-        function loadFinances() {
-            const hoy = new Date().toISOString().split('T')[0];
-            
-            // Comisiones del día
-            database.ref(`admin/comisiones`).orderByChild('fecha').equalTo(hoy)
-                .on('value', (snapshot) => {
-                    let total = 0;
-                    snapshot.forEach((child) => {
-                        total += child.val().comision || 0;
-                    });
-                    document.getElementById('todayCommissions').textContent = `$${total}`;
-                });
-
-            // Tabla de comisiones
-            database.ref('admin/comisiones').limitToLast(20).once('value', (snapshot) => {
-                const comisiones = snapshot.val();
-                const tbody = document.getElementById('commissionsTableBody');
-                
-                if (!comisiones) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay comisiones registradas</td></tr>';
-                    return;
-                }
-
-                let html = '';
-                Object.entries(comisiones).reverse().forEach(([id, comision]) => {
-                    html += `
-                        <tr>
-                            <td>${comision.fecha || 'N/A'}</td>
-                            <td>#${comision.servicioId?.substring(0, 6) || 'N/A'}</td>
-                            <td>${comision.choferId?.substring(0, 6) || 'N/A'}</td>
-                            <td>$${comision.monto_servicio || '0'}</td>
-                            <td style="color:#FF6B35;font-weight:700;">$${comision.comision || '0'}</td>
-                        </tr>
-                    `;
-                });
-                
-                tbody.innerHTML = html;
-            });
-        }
-
-        // ========== FUNCIONES DE CHOFERES ==========
-        function addDriverForm() {
-            const nombre = prompt('👤 Nombre completo del chofer:');
-            if (!nombre) return;
-            
-            const email = prompt('📧 Email del chofer:');
-            if (!email) return;
-            
-            const password = prompt('🔒 Contraseña para el chofer:');
-            if (!password) return;
-            
-            const placa = prompt('🏍️ Placa del mototaxi (Ej: XYZ-123):');
-            const telefono = prompt('📱 Teléfono:');
+            if (password.length < 6) {
+                alert('⚠️ La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
 
             // Crear usuario en Authentication
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     const choferId = userCredential.user.uid;
                     
-                    // Guardar datos en Realtime Database
+                    // Guardar en Realtime Database
                     return database.ref(`choferes/${choferId}`).set({
                         nombre: nombre,
                         email: email,
-                        placa: placa || '',
-                        telefono: telefono || '',
+                        placa: placa,
+                        telefono: telefono,
                         estado: 'inactivo',
                         calificacion: 0,
                         total_servicios: 0,
@@ -1064,95 +961,285 @@
                     });
                 })
                 .then(() => {
-                    alert('✅ Chofer registrado exitosamente');
+                    alert('✅ Chofer registrado exitosamente\n\nEmail: ' + email + '\nContraseña: ' + password + '\n\nGuarda estos datos para entregar al chofer.');
+                    closeModal();
                     loadDrivers();
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    alert('❌ Error al registrar: ' + error.message);
+                    alert('❌ Error: ' + error.message);
                 });
         }
 
-        function editDriver(choferId) {
-            database.ref(`choferes/${choferId}`).once('value', (snapshot) => {
-                const chofer = snapshot.val();
-                const nombre = prompt('Editar nombre:', chofer.nombre);
-                if (!nombre) return;
+        // ========== RESTABLECER CONTRASEÑA ==========
+        function resetDriverPassword(choferId) {
+            database.ref(`choferes/${choferId}`).once('value', (snap) => {
+                const chofer = snap.val();
                 
-                const placa = prompt('Editar placa:', chofer.placa);
-                const telefono = prompt('Editar teléfono:', chofer.telefono);
-                
-                database.ref(`choferes/${choferId}`).update({
-                    nombre: nombre,
-                    placa: placa,
-                    telefono: telefono
-                }).then(() => {
-                    alert('✅ Chofer actualizado');
-                    loadDrivers();
-                });
+                if (!chofer || !chofer.email) {
+                    alert('⚠️ Este chofer no tiene email registrado');
+                    return;
+                }
+
+                const modal = document.getElementById('modalContainer');
+                modal.innerHTML = `
+                    <div class="modal-overlay" onclick="closeModal()">
+                        <div class="modal" onclick="event.stopPropagation()">
+                            <h3>🔑 Restablecer Contraseña</h3>
+                            <p style="margin-bottom:1rem;">Chofer: <strong>${chofer.nombre}</strong></p>
+                            <p style="margin-bottom:1rem;">Email: <strong>${chofer.email}</strong></p>
+                            
+                            <div class="form-group">
+                                <label>Nueva Contraseña</label>
+                                <input type="password" id="resetPassword" class="form-control" placeholder="Mínimo 6 caracteres">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Confirmar Contraseña</label>
+                                <input type="password" id="resetPasswordConfirm" class="form-control" placeholder="Repite la contraseña">
+                            </div>
+                            
+                            <p style="font-size:0.85rem;opacity:0.7;margin-bottom:1rem;">
+                                ⚠️ La contraseña se actualizará inmediatamente. Informa al chofer su nueva contraseña.
+                            </p>
+                            
+                            <div class="modal-buttons">
+                                <button class="btn btn-glass" onclick="closeModal()">Cancelar</button>
+                                <button class="btn btn-primary" onclick="confirmResetPassword('${choferId}', '${chofer.email}', '${chofer.nombre}')">✅ Actualizar Contraseña</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
         }
 
-        function deleteDriver(choferId) {
-            if (confirm('⚠️ ¿Estás seguro de eliminar este chofer? Esta acción no se puede deshacer.')) {
-                database.ref(`choferes/${choferId}`).remove()
-                    .then(() => alert('✅ Chofer eliminado'))
-                    .catch((error) => alert('❌ Error: ' + error.message));
+        function confirmResetPassword(choferId, email, nombre) {
+            const newPassword = document.getElementById('resetPassword').value;
+            const confirmPassword = document.getElementById('resetPasswordConfirm').value;
+
+            if (!newPassword || newPassword.length < 6) {
+                alert('⚠️ La contraseña debe tener al menos 6 caracteres');
+                return;
             }
+
+            if (newPassword !== confirmPassword) {
+                alert('⚠️ Las contraseñas no coinciden');
+                return;
+            }
+
+            // Guardar registro en la base de datos
+            database.ref(`admin/reset_passwords`).push({
+                choferId: choferId,
+                email: email,
+                nombre: nombre,
+                nuevaPassword: newPassword,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                aplicado: false
+            });
+
+            alert('✅ Solicitud de cambio registrada.\n\n' +
+                  '⚠️ IMPORTANTE: Para completar el cambio, debes:\n\n' +
+                  '1. Ir a Firebase Console → Authentication → Users\n' +
+                  '2. Buscar el usuario: ' + email + '\n' +
+                  '3. Hacer clic en los 3 puntos ⋮ → "Cambiar contraseña"\n' +
+                  '4. Ingresar la nueva contraseña: ' + newPassword + '\n\n' +
+                  '📋 Informa al chofer:\n' +
+                  'Email: ' + email + '\n' +
+                  'Nueva contraseña: ' + newPassword);
+            
+            closeModal();
         }
 
-        function suspendDriver(choferId) {
-            if (confirm('⚠️ ¿Suspender a este chofer?')) {
-                database.ref(`choferes/${choferId}`).update({
-                    estado: 'suspendido'
-                }).then(() => {
-                    alert('✅ Chofer suspendido');
+        // ========== EDITAR CHOFER ==========
+        function editDriver(choferId) {
+            database.ref(`choferes/${choferId}`).once('value', (snap) => {
+                const chofer = snap.val();
+                const modal = document.getElementById('modalContainer');
+                modal.innerHTML = `
+                    <div class="modal-overlay" onclick="closeModal()">
+                        <div class="modal" onclick="event.stopPropagation()">
+                            <h3>✏️ Editar Chofer</h3>
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text" id="editName" class="form-control" value="${chofer.nombre || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>Placa</label>
+                                <input type="text" id="editPlaca" class="form-control" value="${chofer.placa || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" id="editTelefono" class="form-control" value="${chofer.telefono || ''}">
+                            </div>
+                            <div class="modal-buttons">
+                                <button class="btn btn-glass" onclick="closeModal()">Cancelar</button>
+                                <button class="btn btn-primary" onclick="saveEditDriver('${choferId}')">💾 Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function saveEditDriver(choferId) {
+            const nombre = document.getElementById('editName').value.trim();
+            const placa = document.getElementById('editPlaca').value.trim();
+            const telefono = document.getElementById('editTelefono').value.trim();
+
+            database.ref(`choferes/${choferId}`).update({ nombre, placa, telefono })
+                .then(() => {
+                    alert('✅ Chofer actualizado');
+                    closeModal();
                     loadDrivers();
                 });
+        }
+
+        // ========== SUSPENDER / ACTIVAR ==========
+        function suspendDriver(choferId) {
+            if (confirm('⚠️ ¿Suspender a este chofer? No recibirá servicios.')) {
+                database.ref(`choferes/${choferId}`).update({ estado: 'suspendido' })
+                    .then(() => { alert('✅ Chofer suspendido'); loadDrivers(); });
             }
         }
 
         function activateDriver(choferId) {
-            database.ref(`choferes/${choferId}`).update({
-                estado: 'activo'
-            }).then(() => {
-                alert('✅ Chofer activado');
-                loadDrivers();
+            database.ref(`choferes/${choferId}`).update({ estado: 'activo' })
+                .then(() => { alert('✅ Chofer activado'); loadDrivers(); });
+        }
+
+        function deleteDriver(choferId) {
+            if (confirm('⚠️ ¿Eliminar este chofer definitivamente?')) {
+                database.ref(`choferes/${choferId}`).remove()
+                    .then(() => { alert('✅ Chofer eliminado'); loadDrivers(); });
+            }
+        }
+
+        // ========== CARGAR SERVICIOS ==========
+        function loadServices() {
+            database.ref('servicios').limitToLast(30).once('value', (snap) => {
+                const servicios = snap.val();
+                const tbody = document.getElementById('servicesTableBody');
+                
+                if (!servicios) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay servicios</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                Object.entries(servicios).reverse().forEach(([id, serv]) => {
+                    const badge = serv.estado === 'completado' ? 'badge-success' :
+                                 serv.estado === 'cancelado' ? 'badge-danger' :
+                                 serv.estado === 'en_servicio' ? 'badge-warning' : 'badge-info';
+                    html += `
+                        <tr>
+                            <td>#${id.substring(0, 6)}</td>
+                            <td>${(serv.clienteId || '').substring(0, 6)}</td>
+                            <td>${(serv.choferNombre || serv.choferId || '---').substring(0, 10)}</td>
+                            <td>${serv.origen?.direccion || 'N/A'}</td>
+                            <td>${serv.destino?.direccion || 'N/A'}</td>
+                            <td><span class="badge ${badge}">${serv.estado}</span></td>
+                            <td>$${serv.cobro || serv.tarifa_estimada || '0'}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            });
+        }
+
+        // ========== CARGAR REPORTES ==========
+        function loadReports() {
+            database.ref('reportes/objetos_olvidados').limitToLast(20).once('value', (snap) => {
+                const reportes = snap.val();
+                const tbody = document.getElementById('reportsTableBody');
+                
+                if (!reportes) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay reportes</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                Object.entries(reportes).reverse().forEach(([id, rep]) => {
+                    html += `
+                        <tr>
+                            <td>${new Date(rep.timestamp).toLocaleDateString()}</td>
+                            <td>#${(rep.servicioId || '').substring(0, 6)}</td>
+                            <td>${rep.clienteId ? 'Cliente' : 'Chofer'}</td>
+                            <td>${rep.descripcion || 'Sin descripción'}</td>
+                            <td><span class="badge ${rep.estado === 'resuelto' ? 'badge-success' : 'badge-warning'}">${rep.estado || 'pendiente'}</span></td>
+                            <td><button class="btn btn-success" onclick="resolveReport('${id}')" style="padding:0.3rem 0.6rem;font-size:0.8rem;">✔️ Resolver</button></td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
             });
         }
 
         function resolveReport(reporteId) {
-            if (confirm('¿Marcar este reporte como resuelto?')) {
+            if (confirm('¿Marcar como resuelto?')) {
                 database.ref(`reportes/objetos_olvidados/${reporteId}`).update({
                     estado: 'resuelto',
                     fecha_resolucion: new Date().toISOString()
-                }).then(() => {
-                    alert('✅ Reporte resuelto');
-                    loadReports();
-                });
+                }).then(() => { alert('✅ Resuelto'); loadReports(); });
             }
         }
 
-        // ========== CAMBIO DE PESTAÑAS ==========
-        function switchTab(tabName, element) {
-            // Ocultar todas las pestañas
-            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
-                tab.style.display = 'none';
+        // ========== CARGAR FINANZAS ==========
+        function loadFinances() {
+            database.ref('admin/comisiones').limitToLast(30).once('value', (snap) => {
+                const comisiones = snap.val();
+                const tbody = document.getElementById('commissionsTableBody');
+                
+                if (!comisiones) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay comisiones</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                let totalHoy = 0, totalSemana = 0, totalMes = 0;
+                const hoy = new Date().toISOString().split('T')[0];
+
+                Object.entries(comisiones).reverse().forEach(([id, com]) => {
+                    if (com.fecha === hoy) totalHoy += (com.comision || 0);
+                    totalMes += (com.comision || 0);
+                    html += `
+                        <tr>
+                            <td>${com.fecha || 'N/A'}</td>
+                            <td>#${(com.servicioId || '').substring(0, 6)}</td>
+                            <td>${(com.choferId || '').substring(0, 8)}</td>
+                            <td>$${com.monto_servicio || 0}</td>
+                            <td style="color:#FF6B35;font-weight:700;">$${com.comision || 0}</td>
+                        </tr>
+                    `;
+                });
+                
+                document.getElementById('todayCommissions').textContent = '$' + totalHoy;
+                document.getElementById('weekCommissions').textContent = '$' + Math.round(totalMes * 0.3);
+                document.getElementById('monthCommissions').textContent = '$' + totalMes;
+                tbody.innerHTML = html;
             });
-            
-            // Mostrar la pestaña seleccionada
+        }
+
+        // ========== UTILIDADES ==========
+        function switchTab(tabName, element) {
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => tab.style.display = 'none');
             const tab = document.getElementById(`tab-${tabName}`);
             if (tab) tab.style.display = 'block';
             
-            // Actualizar menú activo
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
+            
+            if (tabName === 'drivers') loadDrivers();
+            if (tabName === 'services') loadServices();
+            if (tabName === 'reports') loadReports();
+            if (tabName === 'finances') loadFinances();
         }
 
-        console.log('🏍️ Zaachila Moto - Admin Dashboard Listo');
-        console.log('👤 Conectado a Firebase:', firebaseConfig.projectId);
+        function closeModal() {
+            document.getElementById('modalContainer').innerHTML = '';
+        }
+
+        console.log('🛡️ Zaachila Moto - Admin Dashboard Listo');
+        console.log('🔥 Conectado a Firebase:', firebaseConfig.projectId);
     </script>
 </body>
 </html>
