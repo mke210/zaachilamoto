@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zaachila Moto - Panel Administrador</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
+    <!-- Leaflet Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
     <style>
         :root {
             --primary: #2D1B69;
@@ -37,13 +46,95 @@
             overflow-x: hidden;
         }
 
-        /* Glassmorphism Container */
-        .glass-container {
-            background: var(--glass);
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0F0C29, #302B63, #24243E);
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .login-container .logo-login {
+            text-align: center;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FF6B35, #E55A2B);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #EF4444;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Dashboard (oculto hasta login) */
+        .dashboard-container {
+            display: none;
         }
 
         /* Header */
@@ -67,9 +158,6 @@
             gap: 1rem;
             font-size: 1.8rem;
             font-weight: 800;
-            background: linear-gradient(to right, #fff, #e0e0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .logo-icon {
@@ -93,23 +181,11 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-primary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #ff8c5a;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
         }
 
         .btn-glass {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
         }
 
@@ -118,13 +194,23 @@
             transform: translateY(-2px);
         }
 
+        .btn-primary {
+            background: #FF6B35;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #ff8c5a;
+            transform: translateY(-2px);
+        }
+
         .btn-danger {
-            background: var(--danger);
+            background: #EF4444;
             color: white;
         }
 
         .btn-success {
-            background: var(--success);
+            background: #10B981;
             color: white;
         }
 
@@ -139,9 +225,17 @@
 
         /* Sidebar */
         .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
         }
 
         .sidebar-menu {
@@ -163,12 +257,12 @@
         }
 
         .menu-item:hover, .menu-item.active {
-            background: var(--glass);
+            background: rgba(255, 255, 255, 0.1);
             transform: translateX(5px);
         }
 
         .menu-item.active {
-            background: var(--secondary);
+            background: #FF6B35;
             box-shadow: 0 5px 20px rgba(255,107,53,0.3);
         }
 
@@ -187,10 +281,11 @@
         }
 
         .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
             padding: 1.8rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
             transition: all 0.3s ease;
         }
 
@@ -203,11 +298,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1rem;
         }
 
         .stat-icon {
             font-size: 2.5rem;
-            opacity: 0.8;
         }
 
         .stat-value {
@@ -223,15 +318,25 @@
         /* Map Container */
         .map-container {
             height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             overflow: hidden;
-            position: relative;
         }
 
         #liveMap {
             height: 100%;
             width: 100%;
-            z-index: 1;
+        }
+
+        /* Panel Container */
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
         }
 
         /* Tables */
@@ -260,7 +365,7 @@
             background: rgba(255,255,255,0.05);
         }
 
-        /* Status Badges */
+        /* Badges */
         .badge {
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
@@ -268,148 +373,27 @@
             font-weight: 600;
         }
 
-        .badge-success {
-            background: var(--success);
-            color: white;
-        }
+        .badge-success { background: #10B981; color: white; }
+        .badge-warning { background: #F59E0B; color: #000; }
+        .badge-danger { background: #EF4444; color: white; }
+        .badge-info { background: #3B82F6; color: white; }
 
-        .badge-warning {
-            background: var(--warning);
-            color: #000;
-        }
-
-        .badge-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal {
-            background: linear-gradient(135deg, #1a1a2e, #2d1b69);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
+        /* Loading */
+        .loading {
+            text-align: center;
             padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
+            font-size: 1.2rem;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(255,107,53,0.2);
-        }
-
-        /* Chat Widget */
-        .chat-widget {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 1500;
-        }
-
-        .chat-toggle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--secondary);
-            border: none;
-            cursor: pointer;
-            font-size: 1.8rem;
-            box-shadow: 0 5px 25px rgba(255,107,53,0.5);
-            transition: all 0.3s ease;
-        }
-
-        .chat-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        .chat-box {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 350px;
-            height: 450px;
-            background: linear-gradient(135deg, #1a1a2e, #2d1b69);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-box.active {
-            display: flex;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
-        .chat-input-area {
-            padding: 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 0.8rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            color: white;
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
         }
 
         /* Responsive */
@@ -417,354 +401,758 @@
             .dashboard {
                 grid-template-columns: 1fr;
             }
+            
             .sidebar {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
-                background: var(--dark);
-                flex-direction: row;
-                padding: 0.5rem;
                 z-index: 999;
+                border-radius: 20px 20px 0 0;
+                padding: 0.5rem;
             }
+            
             .sidebar-menu {
                 flex-direction: row;
                 overflow-x: auto;
+                gap: 0.3rem;
             }
+            
             .menu-item {
                 padding: 0.5rem 1rem;
-                font-size: 0.9rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
             }
-        }
-
-        /* Pulse Animation */
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255,107,53,0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255,107,53,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,107,53,0); }
+            
+            .main-content {
+                padding-bottom: 80px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="admin-header">
-        <div class="logo">
-            <span class="logo-icon">🏍️</span>
-            <span>Zaachila Moto</span>
-        </div>
-        <div class="header-actions">
-            <button class="btn btn-glass" onclick="refreshData()">
-                🔄 Actualizar
-            </button>
-            <button class="btn btn-glass" onclick="showNotifications()">
-                🔔 <span id="notifCount">3</span>
-            </button>
-            <span style="font-weight:600;">Admin Principal</span>
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--secondary);display:flex;align-items:center;justify-content:center;">A</div>
-        </div>
-    </header>
-
-    <!-- Dashboard -->
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <nav class="sidebar glass-container">
-            <ul class="sidebar-menu">
-                <li class="menu-item active" onclick="switchTab('overview')">
-                    📊 Dashboard
-                </li>
-                <li class="menu-item" onclick="switchTab('drivers')">
-                    🏍️ Choferes
-                </li>
-                <li class="menu-item" onclick="switchTab('services')">
-                    📋 Servicios Activos
-                </li>
-                <li class="menu-item" onclick="switchTab('reports')">
-                    📝 Reportes
-                </li>
-                <li class="menu-item" onclick="switchTab('finances')">
-                    💰 Finanzas
-                </li>
-                <li class="menu-item" onclick="switchTab('config')">
-                    ⚙️ Configuración
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="main-content" id="mainContent">
-            <!-- Overview Tab -->
-            <div id="tab-overview">
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card glass-container">
-                        <div class="stat-header">
-                            <span class="stat-icon">🏍️</span>
-                            <span class="badge badge-success">Activos</span>
-                        </div>
-                        <div class="stat-value">24</div>
-                        <div class="stat-label">Choferes en servicio</div>
-                    </div>
-                    <div class="stat-card glass-container">
-                        <div class="stat-header">
-                            <span class="stat-icon">📋</span>
-                            <span class="badge badge-warning">En curso</span>
-                        </div>
-                        <div class="stat-value">8</div>
-                        <div class="stat-label">Viajes activos ahora</div>
-                    </div>
-                    <div class="stat-card glass-container">
-                        <div class="stat-header">
-                            <span class="stat-icon">💰</span>
-                            <span class="badge badge-success">Hoy</span>
-                        </div>
-                        <div class="stat-value">$3,450</div>
-                        <div class="stat-label">Ganancias totales</div>
-                    </div>
-                    <div class="stat-card glass-container">
-                        <div class="stat-header">
-                            <span class="stat-icon">⭐</span>
-                            <span class="badge badge-success">4.8</span>
-                        </div>
-                        <div class="stat-value">256</div>
-                        <div class="stat-label">Servicios hoy</div>
-                    </div>
-                </div>
-
-                <!-- Live Map -->
-                <div class="map-container glass-container">
-                    <div id="liveMap"></div>
-                </div>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="logo-login">🏍️</div>
+            <h1>Zaachila Moto</h1>
+            <p style="text-align:center;margin-bottom:2rem;opacity:0.8;">Panel de Administración</p>
+            
+            <div id="loginError" class="error-message"></div>
+            
+            <div class="form-group">
+                <label>📧 Email</label>
+                <input type="email" id="email" class="form-control" placeholder="admin@zaachilamoto.com" value="admin@zaachilamoto.com">
             </div>
-
-            <!-- Drivers Tab -->
-            <div id="tab-drivers" style="display:none;">
-                <div class="glass-container" style="padding:1.5rem;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-                        <h2>🏍️ Gestión de Choferes</h2>
-                        <button class="btn btn-primary" onclick="addDriver()">
-                            ➕ Nuevo Chofer
-                        </button>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Placa</th>
-                                    <th>Estado</th>
-                                    <th>Calificación</th>
-                                    <th>Servicios Hoy</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="driversTable">
-                                <tr>
-                                    <td>#001</td>
-                                    <td>Juan Pérez</td>
-                                    <td>XYZ-123</td>
-                                    <td><span class="badge badge-success">Activo</span></td>
-                                    <td>⭐ 4.9</td>
-                                    <td>12</td>
-                                    <td>
-                                        <button class="btn btn-glass" onclick="editDriver('001')">✏️</button>
-                                        <button class="btn btn-danger" onclick="deleteDriver('001')">🗑️</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#002</td>
-                                    <td>María López</td>
-                                    <td>ABC-456</td>
-                                    <td><span class="badge badge-success">Activo</span></td>
-                                    <td>⭐ 4.7</td>
-                                    <td>8</td>
-                                    <td>
-                                        <button class="btn btn-glass" onclick="editDriver('002')">✏️</button>
-                                        <button class="btn btn-danger" onclick="deleteDriver('002')">🗑️</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#003</td>
-                                    <td>Carlos Ruiz</td>
-                                    <td>DEF-789</td>
-                                    <td><span class="badge badge-warning">En servicio</span></td>
-                                    <td>⭐ 4.5</td>
-                                    <td>5</td>
-                                    <td>
-                                        <button class="btn btn-glass" onclick="editDriver('003')">✏️</button>
-                                        <button class="btn btn-danger" onclick="deleteDriver('003')">🗑️</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            
+            <div class="form-group">
+                <label>🔒 Contraseña</label>
+                <input type="password" id="password" class="form-control" placeholder="Tu contraseña">
             </div>
-        </main>
+            
+            <button onclick="loginAdmin()" class="btn-login" id="loginBtn">
+                🔐 Iniciar Sesión
+            </button>
+            
+            <p style="text-align:center;margin-top:1rem;font-size:0.9rem;opacity:0.6;">
+                Acceso exclusivo para administradores
+            </p>
+        </div>
     </div>
 
-    <!-- Modal Container -->
-    <div id="modalContainer"></div>
-
-    <!-- Chat Widget -->
-    <div class="chat-widget">
-        <div class="chat-box" id="chatBox">
-            <div style="padding:1rem;background:var(--gradient);font-weight:600;">
-                💬 Soporte a Choferes
+    <!-- DASHBOARD (oculto hasta login) -->
+    <div id="dashboardContainer" class="dashboard-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="logo">
+                <span class="logo-icon">🏍️</span>
+                <span>Zaachila Moto</span>
             </div>
-            <div class="chat-messages" id="chatMessages">
-                <div style="margin-bottom:1rem;text-align:left;">
-                    <div style="background:var(--glass);padding:0.8rem;border-radius:12px;display:inline-block;max-width:80%;">
-                        Chofer #001: Tengo un problema con un cliente
+            <div class="header-actions">
+                <button class="btn btn-glass" onclick="location.reload()">
+                    🔄 Actualizar
+                </button>
+                <span id="adminName" style="font-weight:600;">Admin</span>
+                <button class="btn btn-danger" onclick="logoutAdmin()">
+                    🚪 Salir
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" onclick="switchTab('overview', this)">
+                        📊 Dashboard
+                    </li>
+                    <li class="menu-item" onclick="switchTab('drivers', this)">
+                        🏍️ Choferes
+                    </li>
+                    <li class="menu-item" onclick="switchTab('services', this)">
+                        📋 Servicios
+                    </li>
+                    <li class="menu-item" onclick="switchTab('reports', this)">
+                        📝 Reportes
+                    </li>
+                    <li class="menu-item" onclick="switchTab('finances', this)">
+                        💰 Finanzas
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- TAB: Overview -->
+                <div id="tab-overview">
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-icon">🏍️</span>
+                                <span class="badge badge-success">Activos</span>
+                            </div>
+                            <div class="stat-value" id="activeDrivers">-</div>
+                            <div class="stat-label">Choferes activos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-icon">📋</span>
+                                <span class="badge badge-warning">En curso</span>
+                            </div>
+                            <div class="stat-value" id="activeServices">-</div>
+                            <div class="stat-label">Servicios activos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-icon">💰</span>
+                                <span class="badge badge-success">Hoy</span>
+                            </div>
+                            <div class="stat-value" id="todayEarnings">-</div>
+                            <div class="stat-label">Ganancias del día</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-icon">✅</span>
+                                <span class="badge badge-info">Total</span>
+                            </div>
+                            <div class="stat-value" id="totalServices">-</div>
+                            <div class="stat-label">Servicios completados hoy</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Map -->
+                    <div class="map-container">
+                        <div id="liveMap"></div>
                     </div>
                 </div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" class="chat-input" id="chatInput" placeholder="Escribe un mensaje...">
-                <button class="btn btn-primary" onclick="sendAdminMessage()">➤</button>
-            </div>
+
+                <!-- TAB: Drivers -->
+                <div id="tab-drivers" style="display:none;">
+                    <div class="panel">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                            <h2>🏍️ Gestión de Choferes</h2>
+                            <button class="btn btn-primary" onclick="addDriverForm()">
+                                ➕ Registrar Chofer
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Placa</th>
+                                        <th>Teléfono</th>
+                                        <th>Estado</th>
+                                        <th>Calificación</th>
+                                        <th>Servicios</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="driversTableBody">
+                                    <tr><td colspan="7" class="loading">Cargando choferes</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Services -->
+                <div id="tab-services" style="display:none;">
+                    <div class="panel">
+                        <h2 style="margin-bottom:1rem;">📋 Servicios en Tiempo Real</h2>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Chofer</th>
+                                        <th>Origen</th>
+                                        <th>Destino</th>
+                                        <th>Estado</th>
+                                        <th>Tarifa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="servicesTableBody">
+                                    <tr><td colspan="7" class="loading">Cargando servicios</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Reports -->
+                <div id="tab-reports" style="display:none;">
+                    <div class="panel">
+                        <h2 style="margin-bottom:1rem;">📝 Reportes de Objetos Olvidados</h2>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Servicio</th>
+                                        <th>Reportado por</th>
+                                        <th>Descripción</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportsTableBody">
+                                    <tr><td colspan="6" class="loading">Cargando reportes</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Finances -->
+                <div id="tab-finances" style="display:none;">
+                    <div class="panel">
+                        <h2 style="margin-bottom:1rem;">💰 Finanzas y Comisiones</h2>
+                        <div class="stats-grid" style="margin-bottom:1.5rem;">
+                            <div class="stat-card">
+                                <div class="stat-label">Comisiones Hoy</div>
+                                <div class="stat-value" style="font-size:2rem;" id="todayCommissions">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Comisiones Semana</div>
+                                <div class="stat-value" style="font-size:2rem;" id="weekCommissions">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Comisiones Mes</div>
+                                <div class="stat-value" style="font-size:2rem;" id="monthCommissions">-</div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Servicio</th>
+                                        <th>Chofer</th>
+                                        <th>Monto Servicio</th>
+                                        <th>Comisión (10%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="commissionsTableBody">
+                                    <tr><td colspan="5" class="loading">Cargando comisiones</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        <button class="chat-toggle" onclick="toggleChat()">💬</button>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize Map
-        const map = L.map('liveMap').setView([16.9516, -96.7491], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        // ========== CONFIGURACIÓN DE FIREBASE ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBXBPMz2OZ3U2KfTaU-uHCBhwmbnR7O40",
+            authDomain: "zaachilamoto.firebaseapp.com",
+            databaseURL: "https://zaachilamoto-default-rtdb.firebaseio.com",
+            projectId: "zaachilamoto",
+            storageBucket: "zaachilamoto.firebasestorage.app",
+            messagingSenderId: "559788509526",
+            appId: "1:559788509526:web:c751d8d22068f09041aef7"
+        };
 
-        // Sample drivers with geolocation
-        const drivers = [
-            { id: 1, name: 'Juan Pérez', lat: 16.9520, lng: -96.7495, status: 'active' },
-            { id: 2, name: 'María López', lat: 16.9510, lng: -96.7480, status: 'active' },
-            { id: 3, name: 'Carlos Ruiz', lat: 16.9530, lng: -96.7500, status: 'active' },
-            { id: 4, name: 'Ana García', lat: 16.9505, lng: -96.7498, status: 'busy' }
-        ];
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-        // Add markers for each driver
-        drivers.forEach(driver => {
-            const marker = L.marker([driver.lat, driver.lng]).addTo(map);
-            marker.bindPopup(`
-                <b>${driver.name}</b><br>
-                Estado: ${driver.status === 'active' ? '✅ Disponible' : '🔴 Ocupado'}<br>
-                <button onclick="contactDriver(${driver.id})" style="background:#FF6B35;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-top:5px;">Contactar</button>
-            `);
+        // ========== VARIABLES GLOBALES ==========
+        let map;
+        let driversMarkers = [];
+        const VILLA_ZAACHILA = [16.9516, -96.7491];
+
+        // ========== AUTENTICACIÓN ==========
+        function loginAdmin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!email || !password) {
+                errorDiv.textContent = '❌ Por favor completa todos los campos';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Iniciando sesión...';
+            errorDiv.style.display = 'none';
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('✅ Login exitoso:', userCredential.user.email);
+                    showDashboard(userCredential.user);
+                })
+                .catch((error) => {
+                    console.error('❌ Error de login:', error);
+                    let mensaje = 'Error al iniciar sesión';
+                    
+                    if (error.code === 'auth/user-not-found') {
+                        mensaje = '❌ Usuario no encontrado. Verifica el email.';
+                    } else if (error.code === 'auth/wrong-password') {
+                        mensaje = '❌ Contraseña incorrecta.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        mensaje = '❌ Email no válido.';
+                    } else if (error.code === 'auth/too-many-requests') {
+                        mensaje = '❌ Demasiados intentos. Espera un momento.';
+                    }
+                    
+                    errorDiv.textContent = mensaje;
+                    errorDiv.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = '🔐 Iniciar Sesión';
+                });
+        }
+
+        function showDashboard(user) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardContainer').style.display = 'block';
+            document.getElementById('adminName').textContent = user.email;
+            
+            // Inicializar mapa y datos
+            initMap();
+            loadAllData();
+            startRealTimeListeners();
+        }
+
+        function logoutAdmin() {
+            auth.signOut().then(() => {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('dashboardContainer').style.display = 'none';
+                document.getElementById('password').value = '';
+            });
+        }
+
+        // Verificar si ya hay sesión activa
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                showDashboard(user);
+            }
         });
 
-        // Tab switching
-        function switchTab(tabName) {
+        // Login con Enter
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
+                loginAdmin();
+            }
+        });
+
+        // ========== INICIALIZAR MAPA ==========
+        function initMap() {
+            map = L.map('liveMap').setView(VILLA_ZAACHILA, 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Marcador de Villa de Zaachila
+            L.marker(VILLA_ZAACHILA, {
+                icon: L.divIcon({
+                    className: 'town-marker',
+                    html: '<div style="background:#2D1B69;color:white;padding:8px 15px;border-radius:20px;font-weight:700;font-size:14px;">📍 Villa de Zaachila</div>',
+                    iconSize: [160, 35]
+                })
+            }).addTo(map);
+        }
+
+        // ========== CARGAR DATOS INICIALES ==========
+        function loadAllData() {
+            loadDrivers();
+            loadServices();
+            loadReports();
+            loadFinances();
+            loadStats();
+        }
+
+        function loadStats() {
+            const hoy = new Date().toISOString().split('T')[0];
+            
+            // Choferes activos
+            database.ref('choferes').orderByChild('estado').equalTo('activo')
+                .on('value', (snapshot) => {
+                    const count = snapshot.numChildren();
+                    document.getElementById('activeDrivers').textContent = count;
+                });
+
+            // Servicios activos
+            database.ref('servicios').orderByChild('estado').equalTo('en_servicio')
+                .on('value', (snapshot) => {
+                    const count = snapshot.numChildren();
+                    document.getElementById('activeServices').textContent = count;
+                });
+
+            // Ganancias del día
+            database.ref(`admin/ganancias/${hoy}`).on('value', (snapshot) => {
+                const ganancias = snapshot.val() || 0;
+                document.getElementById('todayEarnings').textContent = `$${ganancias}`;
+            });
+
+            // Total servicios hoy
+            database.ref('servicios').orderByChild('estado').equalTo('completado')
+                .on('value', (snapshot) => {
+                    let count = 0;
+                    snapshot.forEach((child) => {
+                        const servicio = child.val();
+                        if (servicio.fecha === hoy) count++;
+                    });
+                    document.getElementById('totalServices').textContent = count;
+                });
+        }
+
+        // ========== ESCUCHAR EN TIEMPO REAL ==========
+        function startRealTimeListeners() {
+            // Escuchar cambios en choferes (ubicaciones)
+            database.ref('choferes').on('value', (snapshot) => {
+                updateDriversOnMap(snapshot.val());
+            });
+
+            // Escuchar nuevos servicios
+            database.ref('servicios').on('child_added', (snapshot) => {
+                console.log('📋 Nuevo servicio:', snapshot.key);
+                loadServices();
+                loadStats();
+            });
+
+            // Escuchar cambios en servicios
+            database.ref('servicios').on('child_changed', (snapshot) => {
+                console.log('🔄 Servicio actualizado:', snapshot.key);
+                loadServices();
+                loadStats();
+            });
+        }
+
+        // ========== ACTUALIZAR CHOFERES EN MAPA ==========
+        function updateDriversOnMap(choferes) {
+            // Limpiar marcadores anteriores
+            driversMarkers.forEach(marker => map.removeLayer(marker));
+            driversMarkers = [];
+
+            if (!choferes) return;
+
+            Object.entries(choferes).forEach(([id, chofer]) => {
+                if (chofer.ubicacion && chofer.estado === 'activo') {
+                    const color = chofer.estado === 'en_servicio' ? '#F59E0B' : '#10B981';
+                    
+                    const marker = L.marker([chofer.ubicacion.lat, chofer.ubicacion.lng], {
+                        icon: L.divIcon({
+                            className: 'driver-marker',
+                            html: `<div style="background:${color};color:white;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:600;">🏍️ ${chofer.nombre || 'Chofer'}</div>`,
+                            iconSize: [100, 30]
+                        })
+                    }).addTo(map);
+
+                    marker.bindPopup(`
+                        <b>${chofer.nombre || 'Sin nombre'}</b><br>
+                        Placa: ${chofer.placa || 'N/A'}<br>
+                        Estado: ${chofer.estado}<br>
+                        Teléfono: ${chofer.telefono || 'N/A'}<br>
+                        <button onclick="contactDriver('${id}')" style="background:#FF6B35;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-top:5px;">Contactar</button>
+                    `);
+
+                    driversMarkers.push(marker);
+                }
+            });
+        }
+
+        // ========== CARGAR CHOFERES ==========
+        function loadDrivers() {
+            database.ref('choferes').once('value', (snapshot) => {
+                const choferes = snapshot.val();
+                const tbody = document.getElementById('driversTableBody');
+                
+                if (!choferes) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay choferes registrados</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                Object.entries(choferes).forEach(([id, chofer]) => {
+                    const estadoBadge = chofer.estado === 'activo' ? 'badge-success' : 
+                                       chofer.estado === 'suspendido' ? 'badge-danger' : 'badge-warning';
+                    
+                    html += `
+                        <tr>
+                            <td>${chofer.nombre || 'Sin nombre'}</td>
+                            <td>${chofer.placa || 'N/A'}</td>
+                            <td>${chofer.telefono || 'N/A'}</td>
+                            <td><span class="badge ${estadoBadge}">${chofer.estado || 'inactivo'}</span></td>
+                            <td>⭐ ${chofer.calificacion || '0'}</td>
+                            <td>${chofer.total_servicios || '0'}</td>
+                            <td>
+                                <button class="btn btn-glass" onclick="editDriver('${id}')" style="padding:0.3rem 0.8rem;">✏️</button>
+                                <button class="btn btn-danger" onclick="deleteDriver('${id}')" style="padding:0.3rem 0.8rem;">🗑️</button>
+                                ${chofer.estado === 'activo' ? 
+                                    `<button class="btn btn-warning" onclick="suspendDriver('${id}')" style="padding:0.3rem 0.8rem;background:#F59E0B;color:black;">⏸️</button>` :
+                                    `<button class="btn btn-success" onclick="activateDriver('${id}')" style="padding:0.3rem 0.8rem;">✅</button>`
+                                }
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            });
+        }
+
+        // ========== CARGAR SERVICIOS ==========
+        function loadServices() {
+            database.ref('servicios').limitToLast(20).once('value', (snapshot) => {
+                const servicios = snapshot.val();
+                const tbody = document.getElementById('servicesTableBody');
+                
+                if (!servicios) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay servicios registrados</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                Object.entries(servicios).reverse().forEach(([id, servicio]) => {
+                    const estadoBadge = servicio.estado === 'completado' ? 'badge-success' :
+                                       servicio.estado === 'cancelado' ? 'badge-danger' :
+                                       servicio.estado === 'en_servicio' ? 'badge-warning' : 'badge-info';
+                    
+                    html += `
+                        <tr>
+                            <td>#${id.substring(0, 6)}</td>
+                            <td>${servicio.clienteId ? servicio.clienteId.substring(0, 6) : 'N/A'}</td>
+                            <td>${servicio.choferId ? servicio.choferId.substring(0, 6) : 'Pendiente'}</td>
+                            <td>${servicio.origen?.direccion || 'N/A'}</td>
+                            <td>${servicio.destino?.direccion || 'N/A'}</td>
+                            <td><span class="badge ${estadoBadge}">${servicio.estado}</span></td>
+                            <td>$${servicio.tarifa_estimada || '0'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            });
+        }
+
+        // ========== CARGAR REPORTES ==========
+        function loadReports() {
+            database.ref('reportes/objetos_olvidados').limitToLast(20).once('value', (snapshot) => {
+                const reportes = snapshot.val();
+                const tbody = document.getElementById('reportsTableBody');
+                
+                if (!reportes) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay reportes</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                Object.entries(reportes).reverse().forEach(([id, reporte]) => {
+                    html += `
+                        <tr>
+                            <td>${new Date(reporte.timestamp).toLocaleDateString()}</td>
+                            <td>#${reporte.servicioId?.substring(0, 6) || 'N/A'}</td>
+                            <td>${reporte.clienteId ? 'Cliente' : 'Chofer'}</td>
+                            <td>${reporte.descripcion || 'Sin descripción'}</td>
+                            <td><span class="badge ${reporte.estado === 'resuelto' ? 'badge-success' : 'badge-warning'}">${reporte.estado || 'pendiente'}</span></td>
+                            <td>
+                                <button class="btn btn-success" onclick="resolveReport('${id}')" style="padding:0.3rem 0.8rem;">✔️ Resolver</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            });
+        }
+
+        // ========== CARGAR FINANZAS ==========
+        function loadFinances() {
+            const hoy = new Date().toISOString().split('T')[0];
+            
+            // Comisiones del día
+            database.ref(`admin/comisiones`).orderByChild('fecha').equalTo(hoy)
+                .on('value', (snapshot) => {
+                    let total = 0;
+                    snapshot.forEach((child) => {
+                        total += child.val().comision || 0;
+                    });
+                    document.getElementById('todayCommissions').textContent = `$${total}`;
+                });
+
+            // Tabla de comisiones
+            database.ref('admin/comisiones').limitToLast(20).once('value', (snapshot) => {
+                const comisiones = snapshot.val();
+                const tbody = document.getElementById('commissionsTableBody');
+                
+                if (!comisiones) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay comisiones registradas</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                Object.entries(comisiones).reverse().forEach(([id, comision]) => {
+                    html += `
+                        <tr>
+                            <td>${comision.fecha || 'N/A'}</td>
+                            <td>#${comision.servicioId?.substring(0, 6) || 'N/A'}</td>
+                            <td>${comision.choferId?.substring(0, 6) || 'N/A'}</td>
+                            <td>$${comision.monto_servicio || '0'}</td>
+                            <td style="color:#FF6B35;font-weight:700;">$${comision.comision || '0'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            });
+        }
+
+        // ========== FUNCIONES DE CHOFERES ==========
+        function addDriverForm() {
+            const nombre = prompt('👤 Nombre completo del chofer:');
+            if (!nombre) return;
+            
+            const email = prompt('📧 Email del chofer:');
+            if (!email) return;
+            
+            const password = prompt('🔒 Contraseña para el chofer:');
+            if (!password) return;
+            
+            const placa = prompt('🏍️ Placa del mototaxi (Ej: XYZ-123):');
+            const telefono = prompt('📱 Teléfono:');
+
+            // Crear usuario en Authentication
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const choferId = userCredential.user.uid;
+                    
+                    // Guardar datos en Realtime Database
+                    return database.ref(`choferes/${choferId}`).set({
+                        nombre: nombre,
+                        email: email,
+                        placa: placa || '',
+                        telefono: telefono || '',
+                        estado: 'inactivo',
+                        calificacion: 0,
+                        total_servicios: 0,
+                        fecha_registro: new Date().toISOString(),
+                        ubicacion: {
+                            lat: VILLA_ZAACHILA[0],
+                            lng: VILLA_ZAACHILA[1]
+                        }
+                    });
+                })
+                .then(() => {
+                    alert('✅ Chofer registrado exitosamente');
+                    loadDrivers();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('❌ Error al registrar: ' + error.message);
+                });
+        }
+
+        function editDriver(choferId) {
+            database.ref(`choferes/${choferId}`).once('value', (snapshot) => {
+                const chofer = snapshot.val();
+                const nombre = prompt('Editar nombre:', chofer.nombre);
+                if (!nombre) return;
+                
+                const placa = prompt('Editar placa:', chofer.placa);
+                const telefono = prompt('Editar teléfono:', chofer.telefono);
+                
+                database.ref(`choferes/${choferId}`).update({
+                    nombre: nombre,
+                    placa: placa,
+                    telefono: telefono
+                }).then(() => {
+                    alert('✅ Chofer actualizado');
+                    loadDrivers();
+                });
+            });
+        }
+
+        function deleteDriver(choferId) {
+            if (confirm('⚠️ ¿Estás seguro de eliminar este chofer? Esta acción no se puede deshacer.')) {
+                database.ref(`choferes/${choferId}`).remove()
+                    .then(() => alert('✅ Chofer eliminado'))
+                    .catch((error) => alert('❌ Error: ' + error.message));
+            }
+        }
+
+        function suspendDriver(choferId) {
+            if (confirm('⚠️ ¿Suspender a este chofer?')) {
+                database.ref(`choferes/${choferId}`).update({
+                    estado: 'suspendido'
+                }).then(() => {
+                    alert('✅ Chofer suspendido');
+                    loadDrivers();
+                });
+            }
+        }
+
+        function activateDriver(choferId) {
+            database.ref(`choferes/${choferId}`).update({
+                estado: 'activo'
+            }).then(() => {
+                alert('✅ Chofer activado');
+                loadDrivers();
+            });
+        }
+
+        function resolveReport(reporteId) {
+            if (confirm('¿Marcar este reporte como resuelto?')) {
+                database.ref(`reportes/objetos_olvidados/${reporteId}`).update({
+                    estado: 'resuelto',
+                    fecha_resolucion: new Date().toISOString()
+                }).then(() => {
+                    alert('✅ Reporte resuelto');
+                    loadReports();
+                });
+            }
+        }
+
+        // ========== CAMBIO DE PESTAÑAS ==========
+        function switchTab(tabName, element) {
+            // Ocultar todas las pestañas
             document.querySelectorAll('[id^="tab-"]').forEach(tab => {
                 tab.style.display = 'none';
             });
+            
+            // Mostrar la pestaña seleccionada
             const tab = document.getElementById(`tab-${tabName}`);
             if (tab) tab.style.display = 'block';
             
+            // Actualizar menú activo
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.closest('.menu-item').classList.add('active');
+            element.classList.add('active');
         }
 
-        // Chat functionality
-        function toggleChat() {
-            document.getElementById('chatBox').classList.toggle('active');
-        }
-
-        function sendAdminMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (message) {
-                const chatMessages = document.getElementById('chatMessages');
-                chatMessages.innerHTML += `
-                    <div style="margin-bottom:1rem;text-align:right;">
-                        <div style="background:var(--secondary);padding:0.8rem;border-radius:12px;display:inline-block;max-width:80%;">
-                            ${message}
-                        </div>
-                    </div>
-                `;
-                input.value = '';
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-        }
-
-        // Driver management
-        function addDriver() {
-            const modal = document.getElementById('modalContainer');
-            modal.innerHTML = `
-                <div class="modal-overlay" onclick="closeModal()">
-                    <div class="modal" onclick="event.stopPropagation()">
-                        <h2 style="margin-bottom:1.5rem;">➕ Registrar Nuevo Chofer</h2>
-                        <div class="form-group">
-                            <label>Nombre Completo</label>
-                            <input type="text" class="form-control" placeholder="Nombre del chofer">
-                        </div>
-                        <div class="form-group">
-                            <label>Teléfono</label>
-                            <input type="tel" class="form-control" placeholder="Número de teléfono">
-                        </div>
-                        <div class="form-group">
-                            <label>Placa del Mototaxi</label>
-                            <input type="text" class="form-control" placeholder="Ej: XYZ-123">
-                        </div>
-                        <div class="form-group">
-                            <label>Foto del Chofer</label>
-                            <input type="file" class="form-control" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <label>Documentos (INE, Licencia)</label>
-                            <input type="file" class="form-control" multiple>
-                        </div>
-                        <div style="display:flex;gap:1rem;justify-content:flex-end;">
-                            <button class="btn btn-glass" onclick="closeModal()">Cancelar</button>
-                            <button class="btn btn-primary" onclick="saveDriver()">💾 Guardar</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function closeModal() {
-            document.getElementById('modalContainer').innerHTML = '';
-        }
-
-        function saveDriver() {
-            alert('✅ Chofer registrado exitosamente');
-            closeModal();
-        }
-
-        function editDriver(id) {
-            alert(`✏️ Editando chofer #${id}`);
-        }
-
-        function deleteDriver(id) {
-            if (confirm(`¿Eliminar chofer #${id}?`)) {
-                alert('🗑️ Chofer eliminado');
-            }
-        }
-
-        function refreshData() {
-            alert('🔄 Datos actualizados');
-        }
-
-        function showNotifications() {
-            alert('🔔 Tienes 3 notificaciones nuevas');
-        }
-
-        // Simulate real-time updates
-        setInterval(() => {
-            // Update random driver position
-            const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
-            randomDriver.lat += (Math.random() - 0.5) * 0.001;
-            randomDriver.lng += (Math.random() - 0.5) * 0.001;
-        }, 5000);
-
-        console.log('🏍️ Zaachila Moto - Admin Dashboard Ready');
+        console.log('🏍️ Zaachila Moto - Admin Dashboard Listo');
+        console.log('👤 Conectado a Firebase:', firebaseConfig.projectId);
     </script>
 </body>
 </html>
