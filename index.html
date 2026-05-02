@@ -1,165 +1,370 @@
-// ========== REEMPLAZAR FUNCIÓN saveEditDriver ==========
-function saveEditDriver(choferId) {
-    const nombre = document.getElementById('editName').value.trim();
-    const placa = document.getElementById('editPlaca').value.trim();
-    const telefono = document.getElementById('editTelefono').value.trim();
-
-    database.ref(`choferes/${choferId}`).update({ nombre, placa, telefono })
-        .then(() => {
-            closeModal();
-            showNotification('✅ Chofer actualizado correctamente', 'success');
-            loadDrivers();
-        })
-        .catch((error) => {
-            showNotification('❌ Error al actualizar: ' + error.message, 'error');
-        });
-}
-
-// ========== AGREGAR FUNCIÓN DE NOTIFICACIÓN ELEGANTE ==========
-function showNotification(message, type = 'success') {
-    const container = document.getElementById('modalContainer');
-    const bgColor = type === 'success' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
-    const borderColor = type === 'success' ? '#10B981' : '#EF4444';
-    const icon = type === 'success' ? '✅' : '❌';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaachila Moto - Admin</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
-    container.innerHTML = `
-        <div class="modal-overlay" onclick="closeModal()">
-            <div class="modal" onclick="event.stopPropagation()" style="max-width:380px;text-align:center;padding:2rem;">
-                <div style="font-size:3rem;margin-bottom:1rem;">${icon}</div>
-                <p style="font-size:1rem;margin-bottom:1.5rem;">${message}</p>
-                <button class="btn btn-primary" onclick="closeModal()" style="width:100%;">Aceptar</button>
-            </div>
-        </div>
-    `;
-    
-    // Auto-cerrar después de 3 segundos
-    setTimeout(() => {
-        if (container.innerHTML.includes(message)) {
-            closeModal();
+    <style>
+        :root {
+            --bg: #0a0a0f; --bg2: #13111a; --card: #1a1722;
+            --acc: #6C5CE7; --green: #00C897; --red: #FF4757;
+            --warn: #FFA502; --txt: #fff; --txt2: #aaa; --txt3: #666; --bd: #252130;
+            --r: 12px; --r2: 18px;
         }
-    }, 3000);
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter','Segoe UI',sans-serif; background: var(--bg); color: var(--txt); min-height: 100vh; }
+        
+        .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-box { background: var(--bg2); border: 1px solid var(--bd); border-radius: var(--r2); padding: 2.5rem; width: 90%; max-width: 380px; text-align: center; }
+        .login-box h1 { font-size: 1.5rem; margin: 1rem 0; }
+        .login-box .logo { font-size: 3.5rem; }
+        .inp { width: 100%; padding: 0.8rem; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r); color: var(--txt); margin-bottom: 0.7rem; outline: none; }
+        .inp:focus { border-color: var(--acc); }
+        .btn { width: 100%; padding: 0.8rem; border-radius: var(--r); font-weight: 700; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-acc { background: var(--acc); color: #fff; }
+        .btn-acc:hover { opacity: 0.9; }
+        .login-err { background: rgba(255,71,87,0.1); border: 1px solid var(--red); padding: 0.6rem; border-radius: var(--r); margin-bottom: 0.8rem; font-size: 0.8rem; display: none; }
 
-// ========== REEMPLAZAR FUNCIÓN saveNewDriver ==========
-function saveNewDriver() {
-    const nombre = document.getElementById('newDriverName').value.trim();
-    const email = document.getElementById('newDriverEmail').value.trim();
-    const password = document.getElementById('newDriverPassword').value;
-    const placa = document.getElementById('newDriverPlaca').value.trim();
-    const telefono = document.getElementById('newDriverTelefono').value.trim();
+        .dashboard { display: none; }
+        .topbar { background: var(--bg2); padding: 0.7rem 1.2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--bd); position: sticky; top: 0; z-index: 100; }
+        .topbar h2 { font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .topbar-actions { display: flex; gap: 0.5rem; }
+        .btn-sm { padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; cursor: pointer; background: var(--card); border: 1px solid var(--bd); color: var(--txt2); }
 
-    if (!nombre || !email || !password) {
-        showNotification('⚠️ Nombre, email y contraseña son obligatorios', 'error');
-        return;
-    }
+        .layout { display: grid; grid-template-columns: 240px 1fr; gap: 1rem; padding: 1rem; min-height: calc(100vh - 55px); }
+        .sidebar { background: var(--bg2); border: 1px solid var(--bd); border-radius: var(--r2); padding: 1rem; height: fit-content; position: sticky; top: 70px; }
+        .sidebar a { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 0.9rem; border-radius: var(--r); color: var(--txt2); text-decoration: none; font-size: 0.85rem; margin-bottom: 0.3rem; cursor: pointer; }
+        .sidebar a:hover, .sidebar a.on { background: var(--acc); color: #fff; }
+        .content { display: flex; flex-direction: column; gap: 1rem; }
 
-    if (password.length < 6) {
-        showNotification('⚠️ La contraseña debe tener al menos 6 caracteres', 'error');
-        return;
-    }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; }
+        .card { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r2); padding: 1.2rem; }
+        .card .val { font-size: 2rem; font-weight: 800; }
+        .card .lbl { font-size: 0.75rem; color: var(--txt3); margin-top: 0.2rem; }
+        .card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
 
-    // Crear usuario en Authentication
-    auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            const choferId = userCredential.user.uid;
-            return database.ref(`choferes/${choferId}`).set({
-                nombre, email, placa, telefono,
-                estado: 'inactivo', calificacion: 0, total_servicios: 0,
-                fecha_registro: new Date().toISOString(),
-                ubicacion: { lat: VILLA_ZAACHILA[0], lng: VILLA_ZAACHILA[1] }
-            });
-        })
-        .then(() => {
-            closeModal();
-            showNotification('✅ Chofer registrado exitosamente', 'success');
-            loadDrivers();
-        })
-        .catch((error) => {
-            showNotification('❌ Error: ' + error.message, 'error');
-        });
-}
+        .panel { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r2); padding: 1.2rem; }
+        .panel h3 { font-size: 0.95rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
 
-// ========== REEMPLAZAR FUNCIONES DE SUSPENDER/ACTIVAR/ELIMINAR ==========
-function suspendDriver(choferId) {
-    const container = document.getElementById('modalContainer');
-    container.innerHTML = `
-        <div class="modal-overlay" onclick="closeModal()">
-            <div class="modal" onclick="event.stopPropagation()" style="max-width:380px;text-align:center;padding:2rem;">
-                <div style="font-size:3rem;margin-bottom:1rem;">⏸️</div>
-                <h3 style="margin-bottom:0.5rem;">Suspender Chofer</h3>
-                <p style="margin-bottom:1.5rem;opacity:0.8;">¿Estás seguro? No recibirá nuevos servicios.</p>
-                <div class="modal-buttons" style="display:flex;gap:0.8rem;">
-                    <button class="btn btn-glass" onclick="closeModal()" style="flex:1;">Cancelar</button>
-                    <button class="btn btn-danger" onclick="confirmSuspend('${choferId}')" style="flex:1;">Suspender</button>
+        .map-box { height: 380px; border-radius: var(--r2); overflow: hidden; border: 1px solid var(--bd); }
+        #map { height: 100%; width: 100%; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th { background: rgba(255,255,255,0.03); padding: 0.6rem; text-align: left; font-weight: 600; color: var(--txt2); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .badge { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.65rem; font-weight: 700; }
+        .badge-g { background: rgba(0,200,151,0.15); color: var(--green); }
+        .badge-r { background: rgba(255,71,87,0.15); color: var(--red); }
+        .badge-y { background: rgba(255,165,2,0.15); color: var(--warn); }
+        .badge-b { background: rgba(108,92,231,0.15); color: var(--acc); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; display: flex; align-items: center; justify-content: center; }
+        .modal { background: var(--bg2); border: 1px solid var(--bd); border-radius: var(--r2); padding: 1.5rem; width: 90%; max-width: 420px; }
+        .modal h3 { margin-bottom: 1rem; }
+        .modal .inp { margin-bottom: 0.8rem; }
+        .modal-btns { display: flex; gap: 0.6rem; margin-top: 1rem; }
+        .modal-btns .btn { flex: 1; }
+
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--card); border: 1px solid var(--bd); padding: 0.7rem 1.2rem; border-radius: var(--r); z-index: 300; font-size: 0.8rem; font-weight: 600; animation: t 2.5s ease forwards; }
+        @keyframes t { 0%{opacity:0;transform:translateX(-50%) translateY(-15px)} 10%{opacity:1;transform:translateX(-50%) translateY(0)} 80%{opacity:1} 100%{opacity:0} }
+
+        @media (max-width: 768px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 99; border-radius: 18px 18px 0 0; display: flex; flex-direction: row; overflow-x: auto; padding: 0.5rem; gap: 0.3rem; }
+            .sidebar a { font-size: 0.7rem; padding: 0.5rem 0.7rem; white-space: nowrap; margin: 0; }
+            .content { padding-bottom: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-box">
+        <div class="logo">🏍️</div>
+        <h1>Zaachila Moto</h1>
+        <div id="loginError" class="login-err"></div>
+        <input type="email" id="email" class="inp" placeholder="Email" value="admin@zaachilamoto.com">
+        <input type="password" id="password" class="inp" placeholder="Contraseña">
+        <button class="btn btn-acc" id="loginBtn" onclick="login()">Ingresar</button>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard">
+    <header class="topbar">
+        <h2>🏍️ Zaachila Moto</h2>
+        <div class="topbar-actions">
+            <span id="adminName" style="font-size:0.8rem;color:var(--txt2);">Admin</span>
+            <button class="btn-sm" onclick="auth.signOut();location.reload();">Salir</button>
+        </div>
+    </header>
+
+    <div class="layout">
+        <nav class="sidebar" id="sidebar">
+            <a class="on" onclick="tab('overview',this)">📊 Panel</a>
+            <a onclick="tab('drivers',this)">🏍️ Choferes</a>
+            <a onclick="tab('services',this)">📋 Viajes</a>
+            <a onclick="tab('reports',this)">📝 Reportes</a>
+            <a onclick="tab('finances',this)">💰 Caja</a>
+        </nav>
+
+        <div class="content">
+            <!-- OVERVIEW -->
+            <div id="tab-overview">
+                <div class="cards">
+                    <div class="card"><div class="icon">🏍️</div><div class="val" id="stActive">0</div><div class="lbl">Activos</div></div>
+                    <div class="card"><div class="icon">📋</div><div class="val" id="stServices">0</div><div class="lbl">En curso</div></div>
+                    <div class="card"><div class="icon">💰</div><div class="val" id="stEarnings">$0</div><div class="lbl">Hoy</div></div>
+                    <div class="card"><div class="icon">✅</div><div class="val" id="stTotal">0</div><div class="lbl">Completados</div></div>
+                </div>
+                <div class="map-box"><div id="map"></div></div>
+            </div>
+
+            <!-- DRIVERS -->
+            <div id="tab-drivers" style="display:none;">
+                <div class="panel">
+                    <h3>🏍️ Choferes <button class="btn-sm" onclick="addDriver()" style="margin-left:auto;">+ Nuevo</button></h3>
+                    <div style="overflow-x:auto;"><table>
+                        <thead><tr><th>Nombre</th><th>Email</th><th>Placa</th><th>Estado</th><th>⭐</th><th>Acc</th></tr></thead>
+                        <tbody id="driversBody"><tr><td colspan="6" style="text-align:center;color:var(--txt3);">Cargando...</td></tr></tbody>
+                    </table></div>
+                </div>
+            </div>
+
+            <!-- SERVICES -->
+            <div id="tab-services" style="display:none;">
+                <div class="panel">
+                    <h3>📋 Viajes</h3>
+                    <div style="overflow-x:auto;"><table>
+                        <thead><tr><th>ID</th><th>Origen</th><th>Destino</th><th>Estado</th><th>$</th></tr></thead>
+                        <tbody id="servicesBody"><tr><td colspan="5" style="text-align:center;color:var(--txt3);">Cargando...</td></tr></tbody>
+                    </table></div>
+                </div>
+            </div>
+
+            <!-- REPORTS -->
+            <div id="tab-reports" style="display:none;">
+                <div class="panel">
+                    <h3>📝 Objetos</h3>
+                    <div style="overflow-x:auto;"><table>
+                        <thead><tr><th>Fecha</th><th>Descripción</th><th>Estado</th><th>Acc</th></tr></thead>
+                        <tbody id="reportsBody"><tr><td colspan="4" style="text-align:center;color:var(--txt3);">Cargando...</td></tr></tbody>
+                    </table></div>
+                </div>
+            </div>
+
+            <!-- FINANCES -->
+            <div id="tab-finances" style="display:none;">
+                <div class="panel">
+                    <h3>💰 Comisiones</h3>
+                    <div class="cards" style="margin-bottom:1rem;">
+                        <div class="card"><div class="lbl">Hoy</div><div class="val" style="font-size:1.5rem;" id="finToday">$0</div></div>
+                        <div class="card"><div class="lbl">Mes</div><div class="val" style="font-size:1.5rem;" id="finMonth">$0</div></div>
+                    </div>
+                    <div style="overflow-x:auto;"><table>
+                        <thead><tr><th>Fecha</th><th>Viaje</th><th>Monto</th><th>10%</th></tr></thead>
+                        <tbody id="commissionsBody"><tr><td colspan="4" style="text-align:center;color:var(--txt3);">Cargando...</td></tr></tbody>
+                    </table></div>
                 </div>
             </div>
         </div>
-    `;
-}
+    </div>
+</div>
 
-function confirmSuspend(choferId) {
-    database.ref(`choferes/${choferId}`).update({ estado: 'suspendido' })
-        .then(() => {
-            closeModal();
-            showNotification('✅ Chofer suspendido', 'success');
-            loadDrivers();
-        });
-}
+<div id="modalContainer"></div>
 
-function activateDriver(choferId) {
-    database.ref(`choferes/${choferId}`).update({ estado: 'activo' })
-        .then(() => {
-            showNotification('✅ Chofer activado', 'success');
-            loadDrivers();
-        });
-}
+<script>
+const fb = { apiKey:"AIzaSyCBXBPMz2OZ3U2KfTaU-uHCBhwmbnR7O40", authDomain:"zaachilamoto.firebaseapp.com", databaseURL:"https://zaachilamoto-default-rtdb.firebaseio.com", projectId:"zaachilamoto", storageBucket:"zaachilamoto.firebasestorage.app", messagingSenderId:"559788509526", appId:"1:559788509526:web:c751d8d22068f09041aef7" };
+firebase.initializeApp(fb);
+const auth=firebase.auth(), db=firebase.database();
+let map, markers=[];
+const ZA=[16.9516,-96.7491];
 
-function deleteDriver(choferId) {
-    const container = document.getElementById('modalContainer');
-    container.innerHTML = `
-        <div class="modal-overlay" onclick="closeModal()">
-            <div class="modal" onclick="event.stopPropagation()" style="max-width:380px;text-align:center;padding:2rem;">
-                <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
-                <h3 style="margin-bottom:0.5rem;">Eliminar Chofer</h3>
-                <p style="margin-bottom:1.5rem;opacity:0.8;">Esta acción no se puede deshacer.</p>
-                <div class="modal-buttons" style="display:flex;gap:0.8rem;">
-                    <button class="btn btn-glass" onclick="closeModal()" style="flex:1;">Cancelar</button>
-                    <button class="btn btn-danger" onclick="confirmDelete('${choferId}')" style="flex:1;">Eliminar</button>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function confirmDelete(choferId) {
-    database.ref(`choferes/${choferId}`).remove()
-        .then(() => {
-            closeModal();
-            showNotification('✅ Chofer eliminado', 'success');
-            loadDrivers();
-        });
-}
-
-// ========== REEMPLAZAR FUNCIÓN confirmResetPassword ==========
-function confirmResetPassword(choferId, email, nombre) {
-    const newPassword = document.getElementById('resetPassword').value;
-    const confirmPassword = document.getElementById('resetPasswordConfirm').value;
-
-    if (!newPassword || newPassword.length < 6) {
-        showNotification('⚠️ La contraseña debe tener al menos 6 caracteres', 'error');
-        return;
-    }
-
-    if (newPassword !== confirmPassword) {
-        showNotification('⚠️ Las contraseñas no coinciden', 'error');
-        return;
-    }
-
-    database.ref(`admin/reset_passwords`).push({
-        choferId, email, nombre, nuevaPassword: newPassword,
-        timestamp: firebase.database.ServerValue.TIMESTAMP, aplicado: false
+function login(){
+    const e=document.getElementById('email').value, p=document.getElementById('password').value;
+    const err=document.getElementById('loginError'), btn=document.getElementById('loginBtn');
+    if(!e||!p){err.textContent='Completa los campos';err.style.display='block';return;}
+    btn.disabled=true;btn.textContent='...';err.style.display='none';
+    auth.signInWithEmailAndPassword(e,p).then(u=>{
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('dashboard').style.display='block';
+        document.getElementById('adminName').textContent=u.user.email;
+        init(); loadAll();
+    }).catch(er=>{
+        err.textContent=er.code==='auth/wrong-password'?'Contraseña incorrecta':'Error';
+        err.style.display='block';btn.disabled=false;btn.textContent='Ingresar';
     });
-
-    closeModal();
-    showNotification('✅ Solicitud registrada. Informa al chofer:\n\nEmail: ' + email + '\nContraseña: ' + newPassword, 'success');
 }
+
+auth.onAuthStateChanged(u=>{if(u){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';init();loadAll();}});
+
+function init(){
+    map=L.map('map',{zoomControl:false,attributionControl:false}).setView(ZA,15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© CartoDB'}).addTo(map);
+    db.ref('choferes').on('value',s=>updateMap(s.val()));
+}
+
+function updateMap(ch){
+    markers.forEach(m=>map.removeLayer(m));markers=[];
+    if(!ch)return;
+    Object.entries(ch).forEach(([id,c])=>{
+        if(c.ubicacion){
+            const cl=c.estado==='en_servicio'?'#FFA502':'#00C897';
+            const mk=L.marker([c.ubicacion.lat,c.ubicacion.lng],{icon:L.divIcon({html:`<div style="background:${cl};color:#000;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;">🏍️</div>`,iconSize:[28,18],iconAnchor:[14,9]})}).addTo(map);
+            mk.bindPopup(`<b>${c.nombre||'Chofer'}</b><br>${c.placa||''}`);
+            markers.push(mk);
+        }
+    });
+}
+
+function loadAll(){ loadStats(); loadDrivers(); loadServices(); loadReports(); loadFinances(); }
+
+function loadStats(){
+    db.ref('choferes').orderByChild('estado').equalTo('activo').on('value',s=>document.getElementById('stActive').textContent=s.numChildren());
+    db.ref('servicios').orderByChild('estado').equalTo('en_servicio').on('value',s=>document.getElementById('stServices').textContent=s.numChildren());
+    const hoy=new Date().toISOString().split('T')[0];
+    db.ref(`admin/ganancias/${hoy}`).on('value',s=>document.getElementById('stEarnings').textContent='$'+(s.val()||0));
+    db.ref('servicios').orderByChild('estado').equalTo('completado').on('value',s=>{let c=0;s.forEach(ch=>{if(ch.val().fecha===hoy)c++;});document.getElementById('stTotal').textContent=c;});
+}
+
+function loadDrivers(){
+    db.ref('choferes').once('value',s=>{
+        const d=s.val();let h='';
+        if(!d){document.getElementById('driversBody').innerHTML='<tr><td colspan="6" style="text-align:center;">Sin choferes</td></tr>';return;}
+        Object.entries(d).forEach(([id,c])=>{
+            const b=c.estado==='activo'?'badge-g':c.estado==='suspendido'?'badge-r':'badge-y';
+            h+=`<tr><td>${c.nombre||'-'}</td><td>${c.email||'-'}</td><td>${c.placa||'-'}</td><td><span class="badge ${b}">${c.estado||'-'}</span></td><td>${c.calificacion||'0'}</td>
+            <td style="display:flex;gap:3px;">
+                <button class="btn-sm" onclick="editD('${id}')">✏️</button>
+                <button class="btn-sm" onclick="resetP('${id}')">🔑</button>
+                <button class="btn-sm" onclick="delD('${id}')">🗑️</button>
+            </td></tr>`;
+        });
+        document.getElementById('driversBody').innerHTML=h;
+    });
+}
+
+function addDriver(){
+    const m=document.getElementById('modalContainer');
+    m.innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>Nuevo Chofer</h3>
+        <input class="inp" id="dName" placeholder="Nombre"><input class="inp" id="dEmail" placeholder="Email"><input class="inp" id="dPass" placeholder="Contraseña" type="password"><input class="inp" id="dPlaca" placeholder="Placa"><input class="inp" id="dTel" placeholder="Teléfono">
+        <div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2);" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveD()">Guardar</button></div>
+    </div></div>`;
+}
+
+function saveD(){
+    const n=document.getElementById('dName').value.trim(), e=document.getElementById('dEmail').value.trim(), p=document.getElementById('dPass').value, pl=document.getElementById('dPlaca').value.trim(), t=document.getElementById('dTel').value.trim();
+    if(!n||!e||!p){toast('Campos obligatorios');return;}
+    if(p.length<6){toast('Contraseña: 6+ caracteres');return;}
+    auth.createUserWithEmailAndPassword(e,p).then(u=>db.ref(`choferes/${u.user.uid}`).set({nombre:n,email:e,placa:pl,telefono:t,estado:'inactivo',calificacion:0,total_servicios:0,fecha_registro:new Date().toISOString(),ubicacion:{lat:ZA[0],lng:ZA[1]}})).then(()=>{closeM();toast('✅ Creado');loadDrivers();}).catch(er=>toast('Error: '+er.message));
+}
+
+function editD(id){
+    db.ref(`choferes/${id}`).once('value',s=>{
+        const c=s.val();
+        const m=document.getElementById('modalContainer');
+        m.innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>Editar</h3>
+            <input class="inp" id="eName" value="${c.nombre||''}"><input class="inp" id="ePlaca" value="${c.placa||''}"><input class="inp" id="eTel" value="${c.telefono||''}">
+            <div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2);" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveE('${id}')">Guardar</button></div>
+        </div></div>`;
+    });
+}
+
+function saveE(id){
+    const n=document.getElementById('eName').value.trim(), pl=document.getElementById('ePlaca').value.trim(), t=document.getElementById('eTel').value.trim();
+    db.ref(`choferes/${id}`).update({nombre:n,placa:pl,telefono:t}).then(()=>{closeM();toast('✅ Actualizado');loadDrivers();});
+}
+
+function resetP(id){
+    db.ref(`choferes/${id}`).once('value',s=>{
+        const c=s.val();
+        const m=document.getElementById('modalContainer');
+        m.innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>🔑 Nueva contraseña</h3><p style="font-size:0.8rem;color:var(--txt2);margin-bottom:0.8rem;">${c.nombre} - ${c.email}</p>
+            <input class="inp" id="rpPass" placeholder="Nueva contraseña" type="password"><input class="inp" id="rpPass2" placeholder="Confirmar" type="password">
+            <div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2);" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveP('${id}','${c.email}','${c.nombre}')">Actualizar</button></div>
+        </div></div>`;
+    });
+}
+
+function saveP(id,email,nombre){
+    const p=document.getElementById('rpPass').value, p2=document.getElementById('rpPass2').value;
+    if(!p||p.length<6){toast('6+ caracteres');return;}
+    if(p!==p2){toast('No coinciden');return;}
+    db.ref('admin/reset_passwords').push({choferId:id,email,nombre,nuevaPassword:p,ts:firebase.database.ServerValue.TIMESTAMP});
+    closeM();toast('✅ Registrado. Informa al chofer');
+}
+
+function delD(id){
+    const m=document.getElementById('modalContainer');
+    m.innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()" style="text-align:center;"><h3>⚠️ Eliminar</h3><p style="margin-bottom:1rem;">¿Confirmar?</p><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2);" onclick="closeM()">No</button><button class="btn" style="background:var(--red);" onclick="confirmDel('${id}')">Eliminar</button></div></div></div>`;
+}
+
+function confirmDel(id){ db.ref(`choferes/${id}`).remove().then(()=>{closeM();toast('Eliminado');loadDrivers();}); }
+
+function loadServices(){
+    db.ref('servicios').limitToLast(20).once('value',s=>{
+        const d=s.val();let h='';
+        if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="5">Sin viajes</td></tr>';return;}
+        Object.entries(d).reverse().forEach(([id,v])=>{
+            const b=v.estado==='completado'?'badge-g':v.estado==='cancelado'?'badge-r':v.estado==='en_servicio'?'badge-y':'badge-b';
+            h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${v.estado}</span></td><td>$${v.cobro||v.tarifa_estimada||0}</td></tr>`;
+        });
+        document.getElementById('servicesBody').innerHTML=h;
+    });
+}
+
+function loadReports(){
+    db.ref('reportes/objetos_olvidados').limitToLast(15).once('value',s=>{
+        const d=s.val();let h='';
+        if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="4">Sin reportes</td></tr>';return;}
+        Object.entries(d).reverse().forEach(([id,r])=>{
+            h+=`<tr><td>${new Date(r.timestamp).toLocaleDateString()}</td><td>${(r.descripcion||'').substring(0,25)}</td><td><span class="badge ${r.estado==='resuelto'?'badge-g':'badge-y'}">${r.estado||'pendiente'}</span></td><td><button class="btn-sm" onclick="resolveR('${id}')">✓</button></td></tr>`;
+        });
+        document.getElementById('reportsBody').innerHTML=h;
+    });
+}
+
+function resolveR(id){ db.ref(`reportes/objetos_olvidados/${id}`).update({estado:'resuelto',fecha_resolucion:new Date().toISOString()}).then(()=>{toast('Resuelto');loadReports();}); }
+
+function loadFinances(){
+    db.ref('admin/comisiones').limitToLast(20).once('value',s=>{
+        const d=s.val();let h='',t=0,m=0;const hoy=new Date().toISOString().split('T')[0];
+        if(!d){document.getElementById('commissionsBody').innerHTML='<tr><td colspan="4">Sin datos</td></tr>';return;}
+        Object.entries(d).reverse().forEach(([id,c])=>{
+            if(c.fecha===hoy)t+=c.comision||0;m+=c.comision||0;
+            h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`;
+        });
+        document.getElementById('finToday').textContent='$'+t;
+        document.getElementById('finMonth').textContent='$'+m;
+        document.getElementById('commissionsBody').innerHTML=h;
+    });
+}
+
+function tab(name,el){
+    document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');
+    const tb=document.getElementById('tab-'+name);if(tb)tb.style.display='block';
+    document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('on'));
+    el.classList.add('on');
+    if(name==='drivers')loadDrivers();
+    if(name==='services')loadServices();
+    if(name==='reports')loadReports();
+    if(name==='finances')loadFinances();
+}
+
+function closeM(){ document.getElementById('modalContainer').innerHTML=''; }
+function toast(m){ const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2500); }
+
+document.addEventListener('keypress',e=>{if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none')login();});
+</script>
+</body>
+</html>
