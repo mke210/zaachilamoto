@@ -234,15 +234,58 @@ function saveD(){
 function editD(id){
     db.ref(`choferes/${id}`).once('value',s=>{
         const c=s.val();
-        document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>✏️ Editar</h3>
-            <input class="inp" id="eName" value="${c.nombre||''}"><input class="inp" id="ePlaca" value="${c.placa||''}"><input class="inp" id="eTel" value="${c.telefono||''}">
-            <div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveE('${id}')">Guardar</button></div>
-        </div></div>`
-    })
+        document.getElementById('modalContainer').innerHTML=`
+        <div class="modal-overlay" onclick="closeM()">
+            <div class="modal" onclick="event.stopPropagation()">
+                <h3>✏️ Editar Chofer</h3>
+                <input class="inp" id="eName" value="${c.nombre||''}" placeholder="Nombre completo">
+                <input class="inp" id="eEmail" value="${c.email||''}" placeholder="Correo electrónico">
+                <input class="inp" id="ePlaca" value="${c.placa||''}" placeholder="Placa">
+                <input class="inp" id="eTel" value="${c.telefono||''}" placeholder="Teléfono">
+                <div class="modal-btns">
+                    <button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button>
+                    <button class="btn btn-acc" onclick="saveE('${id}')">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>`;
+    });
 }
 
 function saveE(id){
-    db.ref(`choferes/${id}`).update({nombre:document.getElementById('eName').value.trim(),placa:document.getElementById('ePlaca').value.trim(),telefono:document.getElementById('eTel').value.trim()}).then(()=>{closeM();toast('✅ Actualizado');loadDrivers()})
+    const nombre = document.getElementById('eName').value.trim();
+    const email = document.getElementById('eEmail').value.trim();
+    const placa = document.getElementById('ePlaca').value.trim();
+    const telefono = document.getElementById('eTel').value.trim();
+    
+    if(!nombre || !email){
+        toast('Nombre y email son obligatorios');
+        return;
+    }
+    
+    // Actualizar en Realtime Database
+    db.ref(`choferes/${id}`).update({
+        nombre: nombre,
+        email: email,
+        placa: placa,
+        telefono: telefono
+    }).then(() => {
+        // Intentar actualizar email en Authentication
+        const user = auth.currentUser;
+        // Nota: No podemos cambiar el email de otro usuario directamente
+        // Se registra el cambio para referencia
+        db.ref(`admin/cambios_email`).push({
+            choferId: id,
+            email_anterior: document.getElementById('eEmail').getAttribute('data-original') || '',
+            email_nuevo: email,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+        
+        closeM();
+        toast('✅ Chofer actualizado');
+        loadDrivers();
+    }).catch(er => {
+        toast('Error: ' + er.message);
+    });
 }
 
 function resetP(id){
