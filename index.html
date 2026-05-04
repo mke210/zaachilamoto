@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zaachila Moto - Admin</title>
-    
-    <!-- Icono integrado -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%236C5CE7'/><text x='50' y='65' text-anchor='middle' font-size='45'>🛺</text></svg>">
-    
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -73,7 +70,22 @@ function resetP(id){db.ref(`choferes/${id}`).once('value',s=>{const c=s.val();do
 function saveP(id,email,nombre){const p=document.getElementById('rpPass').value,p2=document.getElementById('rpPass2').value;if(!p||p.length<6){toast('Mínimo 6');return}if(p!==p2){toast('No coinciden');return}db.ref('admin/reset_passwords').push({choferId:id,email,nombre,nuevaPassword:p,ts:firebase.database.ServerValue.TIMESTAMP});closeM();toast('Registrado')}
 function delD(id){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()" style="text-align:center"><h3>⚠️ ¿Eliminar?</h3><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">No</button><button class="btn" style="background:var(--red)" onclick="confirmDel('${id}')">Eliminar</button></div></div></div>`}
 function confirmDel(id){db.ref(`choferes/${id}`).remove().then(()=>{closeM();toast('Eliminado');loadDrivers()})}
-function loadServices(){db.ref('servicios').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="6">Sin viajes</td></tr>';return}Object.entries(d).reverse().forEach(([id,v])=>{const b=v.estado==='completado'?'badge-g':v.estado==='cancelado'?'badge-r':v.estado==='en_servicio'?'badge-y':'badge-b';const cal=v.calificacion?v.calificacion.puntuacion:'-';h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${v.estado}</span></td><td>$${v.cobro||v.tarifa_estimada||0}</td><td>${cal!=='-'?'⭐'+cal:cal}</td></tr>`});document.getElementById('servicesBody').innerHTML=h})}
+
+// ✅ loadServices ACTUALIZADO con estado cancelado_chofer
+function loadServices(){
+    db.ref('servicios').limitToLast(30).once('value',s=>{
+        const d=s.val();let h='';
+        if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="6">Sin viajes</td></tr>';return}
+        Object.entries(d).reverse().forEach(([id,v])=>{
+            let b=v.estado==='completado'?'badge-g':v.estado==='cancelado'||v.estado==='cancelado_chofer'?'badge-r':v.estado==='en_servicio'?'badge-y':'badge-b';
+            let estadoTexto=v.estado==='cancelado_chofer'?'Cancelado chofer':v.estado==='cancelado'?'Cancelado':v.estado;
+            const cal=v.calificacion?v.calificacion.puntuacion:'-';
+            h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${estadoTexto}</span></td><td>$${v.cobro||v.tarifa_estimada||0}</td><td>${cal!=='-'?'⭐'+cal:cal}</td></tr>`
+        });
+        document.getElementById('servicesBody').innerHTML=h
+    })
+}
+
 function loadReports(){db.ref('reportes/objetos_olvidados').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="7">Sin reportes</td></tr>';return}Object.entries(d).reverse().forEach(([id,r])=>{h+=`<tr><td>${new Date(r.timestamp).toLocaleDateString()}</td><td>#${(r.servicioId||'').substring(0,5)}</td><td><span class="badge ${r.tipo==='chofer_reporta'?'badge-b':'badge-y'}">${r.tipo==='chofer_reporta'?'🛺':'👤'}</span></td><td>${(r.descripcion||'').substring(0,25)}</td><td>${r.foto?`<a href="${r.foto}" target="_blank" style="color:var(--acc)">📸</a>`:'-'}</td><td><span class="badge ${r.estado==='resuelto'?'badge-g':'badge-y'}">${r.estado||'pendiente'}</span></td><td>${r.estado!=='resuelto'?`<button class="btn-sm" onclick="resolveR('${id}')">✓</button>`:'-'}</td></tr>`});document.getElementById('reportsBody').innerHTML=h})}
 function resolveR(id){db.ref(`reportes/objetos_olvidados/${id}`).update({estado:'resuelto'}).then(()=>{toast('Resuelto');loadReports()})}
 function loadFinances(){db.ref('admin/comisiones').limitToLast(30).once('value',s=>{const d=s.val();let h='',t=0,m=0;const hoy=new Date().toISOString().split('T')[0];if(!d){document.getElementById('commissionsBody').innerHTML='<tr><td colspan="4">Sin datos</td></tr>';return}Object.entries(d).reverse().forEach(([id,c])=>{if(c.fecha===hoy)t+=c.comision||0;m+=c.comision||0;h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`});document.getElementById('finToday').textContent='$'+t;document.getElementById('finMonth').textContent='$'+m;document.getElementById('commissionsBody').innerHTML=h})}
