@@ -5,7 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zaachila Moto - Admin</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%236C5CE7'/><text x='50' y='65' text-anchor='middle' font-size='45'>🛺</text></svg>">
+    <script src="https://www.<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaachila Moto - Admin</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%236C5CE7'/><text x='50' y='65' text-anchor='middle' font-size='45'>🛺</text></svg>">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root{--bg:#0a0a0f;--bg2:#13111a;--card:#1a1722;--acc:#6C5CE7;--green:#00C897;--red:#FF4757;--warn:#FFA502;--txt:#fff;--txt2:#aaa;--txt3:#666;--bd:#252130;--r:14px;--r2:22px}
+        *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+        .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+        .login-box{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:2rem;width:90%;max-width:360px;text-align:center}
+        .login-box .logo{font-size:3rem}.login-box h1{font-size:1.3rem;margin:.8rem 0}
+        .inp{width:100%;padding:.7rem;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);margin-bottom:.6rem;outline:0;font-size:.9rem}.inp:focus{border-color:var(--acc)}
+        .btn{width:100%;padding:.7rem;border-radius:var(--r);font-weight:700;cursor:pointer;border:0;font-size:.85rem;transition:.2s}.btn-acc{background:var(--acc);color:#fff}.btn-acc:hover{opacity:.9}
+        .btn-sm{padding:.35rem .7rem;border-radius:8px;font-size:.7rem;cursor:pointer;background:var(--card);border:1px solid var(--bd);color:var(--txt2);white-space:nowrap}.btn-sm:hover{background:var(--bd)}
+        .login-err{background:rgba(255,71,87,.1);border:1px solid var(--red);padding:.5rem;border-radius:var(--r);margin-bottom:.6rem;font-size:.75rem;display:none}
+        .dashboard{display:none}.topbar{background:var(--bg2);padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+        .topbar h2{font-size:1rem}.topbar-actions{display:flex;gap:.4rem;align-items:center}
+        .layout{display:grid;grid-template-columns:200px 1fr;gap:1rem;padding:1rem}
+        .sidebar{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:.8rem;height:fit-content;position:sticky;top:60px}
+        .sidebar a{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;border-radius:var(--r);color:var(--txt2);text-decoration:none;font-size:.8rem;margin-bottom:.2rem;cursor:pointer;transition:.2s}.sidebar a:hover,.sidebar a.on{background:var(--acc);color:#fff}
+        .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin-bottom:1rem}
+        .card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:1rem}.card .val{font-size:1.8rem;font-weight:800}.card .lbl{font-size:.7rem;color:var(--txt3)}
+        .panel{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:1rem}.panel h3{font-size:.9rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+        table{width:100%;border-collapse:collapse;font-size:.72rem}th{background:rgba(255,255,255,.03);padding:.4rem;text-align:left;font-weight:600;color:var(--txt2);font-size:.6rem;text-transform:uppercase}td{padding:.4rem;border-bottom:1px solid rgba(255,255,255,.03)}tr:hover td{background:rgba(255,255,255,.02)}
+        .badge{padding:.15rem .5rem;border-radius:10px;font-size:.6rem;font-weight:700}.badge-g{background:rgba(0,200,151,.15);color:var(--green)}.badge-r{background:rgba(255,71,87,.15);color:var(--red)}.badge-y{background:rgba(255,165,2,.15);color:var(--warn)}.badge-b{background:rgba(108,92,231,.15);color:var(--acc)}
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center}
+        .modal{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:1.2rem;width:90%;max-width:480px;max-height:85vh;overflow-y:auto}
+        .modal h3{margin-bottom:1rem}.modal label{display:block;font-size:.7rem;color:var(--txt2);margin-bottom:.2rem;margin-top:.5rem}
+        .modal .inp{margin-bottom:.5rem}.modal-btns{display:flex;gap:.5rem;margin-top:1rem}.modal-btns .btn{flex:1}
+        .detail-row{background:var(--card);padding:.5rem;border-radius:var(--r);margin-bottom:.4rem;font-size:.8rem}
+        textarea{width:100%;min-height:150px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);padding:.7rem;font-family:monospace;font-size:.75rem;resize:vertical;outline:0}
+        .toast{position:fixed;top:15px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);padding:.6rem 1rem;border-radius:var(--r);z-index:300;font-size:.75rem;font-weight:600;animation:t 2.5s ease forwards;pointer-events:none}
+        @keyframes t{0%{opacity:0;transform:translateX(-50%) translateY(-10px)}10%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
+        @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{position:fixed;bottom:0;left:0;right:0;z-index:99;border-radius:18px 18px 0 0;display:flex;flex-direction:row;overflow-x:auto;padding:.4rem;gap:.2rem}.sidebar a{font-size:.65rem;padding:.4rem .6rem;white-space:nowrap;margin:0}.cards{grid-template-columns:repeat(2,1fr)}}
+    </style>
+</head>
+<body>
+<div id="loginScreen" class="login-screen"><div class="login-box"><div class="logo">🛺</div><h1>Zaachila Moto Admin</h1><div id="loginError" class="login-err"></div><input type="email" id="email" class="inp" placeholder="Email" value="admin@zaachilamoto.com"><input type="password" id="password" class="inp" placeholder="Contraseña"><button class="btn btn-acc" id="loginBtn" onclick="login()">Ingresar</button></div></div>
+<div id="dashboard" class="dashboard">
+    <header class="topbar"><h2>🛺 Zaachila Moto</h2><div class="topbar-actions"><span style="font-size:.75rem;color:var(--txt2)" id="adminName">Admin</span><button class="btn-sm" onclick="exportData()">📥 Exportar</button><button class="btn-sm" onclick="importData()">📤 Importar</button><button class="btn-sm" onclick="auth.signOut();location.reload()">Salir</button></div></header>
+    <div class="layout">
+        <nav class="sidebar">
+            <a class="on" onclick="tab('overview',this)">📊 Panel</a>
+            <a onclick="tab('drivers',this)">🛺 Choferes</a>
+            <a onclick="tab('solicitudes',this)">📝 Solicitudes</a>
+            <a onclick="tab('services',this)">📋 Viajes</a>
+            <a onclick="tab('reports',this)">📦 Reportes</a>
+            <a onclick="tab('finances',this)">💰 Caja</a>
+        </nav>
+        <div>
+            <div id="tab-overview"><div class="cards"><div class="card"><div class="val" id="stActive">0</div><div class="lbl">Choferes activos</div></div><div class="card"><div class="val" id="stServices">0</div><div class="lbl">Viajes en curso</div></div><div class="card"><div class="val" id="stEarnings">$0</div><div class="lbl">Ganancias hoy</div></div><div class="card"><div class="val" id="stSolicitudes">0</div><div class="lbl">Solicitudes pend.</div></div></div></div>
+            <div id="tab-drivers" style="display:none"><div class="panel"><h3>🛺 Choferes <button class="btn-sm" onclick="addDriver()" style="margin-left:auto">+ Nuevo</button></h3><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Email</th><th>Placa</th><th>Color</th><th>Unidad</th><th>Estado</th><th>⭐</th><th></th></tr></thead><tbody id="driversBody"><tr><td colspan="8" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody></table></div></div></div>
+            <div id="tab-solicitudes" style="display:none"><div class="panel"><h3>📝 Solicitudes de Choferes</h3><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Email</th><th>Tel</th><th>Sitio</th><th>Placa</th><th>N° Moto</th><th>Fotos</th><th>Estado</th><th></th></tr></thead><tbody id="solicitudesBody"><tr><td colspan="9" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody></table></div></div></div>
+            <div id="tab-services" style="display:none"><div class="panel"><h3>📋 Viajes</h3><div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Origen</th><th>Destino</th><th>Estado</th><th>$</th><th>⭐</th></tr></thead><tbody id="servicesBody"><tr><td colspan="6" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody></table></div></div></div>
+            <div id="tab-reports" style="display:none"><div class="panel"><h3>📦 Objetos reportados</h3><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Descripción</th><th>Foto</th><th>Estado</th><th></th></tr></thead><tbody id="reportsBody"><tr><td colspan="7" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody></table></div></div></div>
+            <div id="tab-finances" style="display:none"><div class="panel"><h3>💰 Comisiones</h3><div class="cards"><div class="card"><div class="lbl">Hoy</div><div class="val" style="font-size:1.5rem" id="finToday">$0</div></div><div class="card"><div class="lbl">Mes</div><div class="val" style="font-size:1.5rem" id="finMonth">$0</div></div></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Viaje</th><th>Monto</th><th>10%</th></tr></thead><tbody id="commissionsBody"><tr><td colspan="4" style="text-align:center;color:var(--txt3)">Cargando...</td></tr></tbody></table></div></div></div>
+        </div>
+    </div>
+</div>
+<div id="modalContainer"></div>
+<script>
+const fb={apiKey:"AIzaSyCBXBPMz2OZ3U2KfTaU-uHCBhwmbnR7O40",authDomain:"zaachilamoto.firebaseapp.com",databaseURL:"https://zaachilamoto-default-rtdb.firebaseio.com",projectId:"zaachilamoto",storageBucket:"zaachilamoto.firebasestorage.app",messagingSenderId:"559788509526",appId:"1:559788509526:web:c751d8d22068f09041aef7"};
+firebase.initializeApp(fb);const auth=firebase.auth(),db=firebase.database();
+
+function login(){const e=document.getElementById('email').value,p=document.getElementById('password').value,err=document.getElementById('loginError'),btn=document.getElementById('loginBtn');if(!e||!p){err.textContent='Completa los campos';err.style.display='block';return}btn.disabled=true;btn.textContent='...';err.style.display='none';auth.signInWithEmailAndPassword(e,p).then(userCredential=>{const user=userCredential.user;document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('adminName').textContent=user.email.split('@')[0];loadAll()}).catch(er=>{err.textContent='Error: '+er.message;err.style.display='block';btn.disabled=false;btn.textContent='Ingresar'})}
+auth.onAuthStateChanged(user=>{if(user){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('adminName').textContent=(user.email||'Admin').split('@')[0];loadAll()}});
+function loadAll(){loadStats();loadDrivers();loadSolicitudes();loadServices();loadReports();loadFinances()}
+function loadStats(){db.ref('choferes').orderByChild('estado').equalTo('activo').on('value',s=>document.getElementById('stActive').textContent=s.numChildren());db.ref('servicios').orderByChild('estado').equalTo('en_servicio').on('value',s=>document.getElementById('stServices').textContent=s.numChildren());const hoy=new Date().toISOString().split('T')[0];db.ref(`admin/ganancias/${hoy}`).on('value',s=>document.getElementById('stEarnings').textContent='$'+(s.val()||0));db.ref('solicitudes_choferes').orderByChild('estado').equalTo('pendiente').on('value',s=>document.getElementById('stSolicitudes').textContent=s.numChildren())}
+function loadDrivers(){db.ref('choferes').once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('driversBody').innerHTML='<tr><td colspan="8">Sin choferes</td></tr>';return}Object.entries(d).forEach(([id,c])=>{const b=c.estado==='activo'?'badge-g':c.estado==='suspendido'?'badge-r':'badge-y';h+=`<tr><td>${c.nombre||'-'}</td><td>${c.email||'-'}</td><td>${c.placa||'-'}</td><td>${c.color||'-'}</td><td>${c.numero||c.unidad||'-'}</td><td><span class="badge ${b}">${c.estado||'-'}</span></td><td>${c.calificacion||'0'}</td><td style="display:flex;gap:3px"><button class="btn-sm" onclick="editD('${id}')">✏️</button><button class="btn-sm" onclick="resetP('${id}')">🔑</button><button class="btn-sm" onclick="delD('${id}')">🗑️</button></td></tr>`});document.getElementById('driversBody').innerHTML=h})}
+function addDriver(){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>➕ Registrar Nuevo Chofer</h3><label>👤 Nombre completo</label><input class="inp" id="dName" placeholder="Ej: Juan Pérez López"><label>📧 Correo electrónico</label><input class="inp" id="dEmail" placeholder="Ej: juan@email.com"><label>🔒 Contraseña (mínimo 6)</label><input class="inp" id="dPass" placeholder="Contraseña" type="password"><label>🏍️ Placa</label><input class="inp" id="dPlaca" placeholder="Ej: XYZ-123"><label>🎨 Color</label><input class="inp" id="dColor" placeholder="Ej: Rojo"><label>🔢 Número de unidad</label><input class="inp" id="dUnidad" placeholder="Ej: M-001"><label>📱 Teléfono</label><input class="inp" id="dTel" placeholder="Ej: 9511234567"><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveD()">💾 Guardar</button></div></div></div>`}
+function saveD(){const n=document.getElementById('dName').value.trim(),e=document.getElementById('dEmail').value.trim(),p=document.getElementById('dPass').value,pl=document.getElementById('dPlaca').value.trim(),co=document.getElementById('dColor').value.trim(),un=document.getElementById('dUnidad').value.trim(),t=document.getElementById('dTel').value.trim();if(!n||!e||!p){toast('Nombre, email y contraseña obligatorios');return}if(p.length<6){toast('Contraseña: mínimo 6');return}auth.createUserWithEmailAndPassword(e,p).then(u=>db.ref(`choferes/${u.user.uid}`).set({nombre:n,email:e,placa:pl,color:co,numero:un,telefono:t,estado:'inactivo',calificacion:0,total_servicios:0,ubicacion:{lat:16.9516,lng:-96.7491}})).then(()=>{closeM();toast('✅ Creado');loadDrivers()}).catch(er=>toast(er.message))}
+function editD(id){db.ref(`choferes/${id}`).once('value',s=>{const c=s.val();document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>✏️ Editar Chofer</h3><label>👤 Nombre</label><input class="inp" id="eName" value="${c.nombre||''}"><label>📧 Email</label><input class="inp" id="eEmail" value="${c.email||''}"><label>🏍️ Placa</label><input class="inp" id="ePlaca" value="${c.placa||''}"><label>🎨 Color</label><input class="inp" id="eColor" value="${c.color||''}"><label>🔢 Número unidad</label><input class="inp" id="eUnidad" value="${c.numero||c.unidad||''}"><label>📱 Teléfono</label><input class="inp" id="eTel" value="${c.telefono||''}"><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveE('${id}')">💾 Guardar</button></div></div></div>`})}
+function saveE(id){db.ref(`choferes/${id}`).update({nombre:document.getElementById('eName').value.trim(),email:document.getElementById('eEmail').value.trim(),placa:document.getElementById('ePlaca').value.trim(),color:document.getElementById('eColor').value.trim(),numero:document.getElementById('eUnidad').value.trim(),telefono:document.getElementById('eTel').value.trim()}).then(()=>{closeM();toast('✅ Actualizado');loadDrivers()})}
+function resetP(id){db.ref(`choferes/${id}`).once('value',s=>{const c=s.val();document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>🔑 Restablecer</h3><p style="font-size:.8rem;color:var(--txt2);margin-bottom:.6rem">${c.nombre} - ${c.email}</p><label>🔒 Nueva contraseña</label><input class="inp" id="rpPass" placeholder="Mínimo 6" type="password"><label>🔒 Confirmar</label><input class="inp" id="rpPass2" placeholder="Repite" type="password"><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveP('${id}','${c.email}','${c.nombre}')">💾 Guardar</button></div></div></div>`})}
+function saveP(id,email,nombre){const p=document.getElementById('rpPass').value,p2=document.getElementById('rpPass2').value;if(!p||p.length<6){toast('Mínimo 6');return}if(p!==p2){toast('No coinciden');return}db.ref('admin/reset_passwords').push({choferId:id,email,nombre,nuevaPassword:p,ts:firebase.database.ServerValue.TIMESTAMP});closeM();toast('✅ Registrado')}
+function delD(id){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()" style="text-align:center"><h3>⚠️ ¿Eliminar?</h3><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">No</button><button class="btn" style="background:var(--red)" onclick="confirmDel('${id}')">🗑️ Eliminar</button></div></div></div>`}
+function confirmDel(id){db.ref(`choferes/${id}`).remove().then(()=>{closeM();toast('✅ Eliminado');loadDrivers();loadStats()})}
+
+// ✅ SOLICITUDES CON DETALLE Y FOTOS
+function loadSolicitudes(){
+    db.ref('solicitudes_choferes').orderByChild('estado').equalTo('pendiente').once('value',s=>{
+        const d=s.val();let h='';
+        if(!d){document.getElementById('solicitudesBody').innerHTML='<tr><td colspan="9">Sin solicitudes pendientes</td></tr>';return}
+        Object.entries(d).forEach(([id,sol])=>{
+            const fotos=[];
+            if(sol.foto_chofer)fotos.push(`<a href="${sol.foto_chofer}" target="_blank" style="color:var(--acc)">👤</a>`);
+            if(sol.foto_moto)fotos.push(`<a href="${sol.foto_moto}" target="_blank" style="color:var(--acc)">🛺</a>`);
+            h+=`<tr>
+                <td>${sol.nombre||'-'}</td>
+                <td>${sol.email||'-'}</td>
+                <td>${sol.telefono||'-'}</td>
+                <td>${sol.sitio||'-'}</td>
+                <td>${sol.placa||'-'}</td>
+                <td>${sol.numero||'-'}</td>
+                <td>${fotos.length>0?fotos.join(' '):'-'}</td>
+                <td><span class="badge badge-y">pendiente</span></td>
+                <td style="display:flex;gap:3px"><button class="btn-sm" onclick="verDetalleSolicitud('${id}')">👁️</button><button class="btn-sm" onclick="autorizarChofer('${id}')">✅</button></td>
+            </tr>`
+        });
+        document.getElementById('solicitudesBody').innerHTML=h;
+    });
+}
+
+function verDetalleSolicitud(id){
+    db.ref(`solicitudes_choferes/${id}`).once('value',snap=>{
+        const sol=snap.val();
+        document.getElementById('modalContainer').innerHTML=`
+        <div class="modal-overlay" onclick="closeM()">
+            <div class="modal" onclick="event.stopPropagation()" style="max-width:480px">
+                <h3>📝 Detalle de Solicitud</h3>
+                <label>👤 Nombre</label><div class="detail-row">${sol.nombre||'-'}</div>
+                <label>📧 Email</label><div class="detail-row">${sol.email||'-'}</div>
+                <label>📱 Teléfono</label><div class="detail-row">${sol.telefono||'-'}</div>
+                <label>📍 Sitio</label><div class="detail-row">${sol.sitio||'-'}</div>
+                <label>🏍️ Placa</label><div class="detail-row">${sol.placa||'-'}</div>
+                <label>🔢 Número de mototaxi</label><div class="detail-row">${sol.numero||'-'}</div>
+                <label>📸 Fotos</label>
+                <div style="display:flex;gap:1rem;margin:.5rem 0;flex-wrap:wrap">
+                    ${sol.foto_chofer?`<div style="text-align:center"><img src="${sol.foto_chofer}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:2px solid var(--acc)"><br><span style="font-size:.6rem;color:var(--txt2)">Foto chofer</span></div>`:'<div style="font-size:.7rem;color:var(--txt3)">Sin foto chofer</div>'}
+                    ${sol.foto_moto?`<div style="text-align:center"><img src="${sol.foto_moto}" style="width:130px;height:90px;border-radius:8px;object-fit:cover;border:2px solid var(--acc)"><br><span style="font-size:.6rem;color:var(--txt2)">Foto mototaxi</span></div>`:'<div style="font-size:.7rem;color:var(--txt3)">Sin foto mototaxi</div>'}
+                </div>
+                <div class="modal-btns">
+                    <button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cerrar</button>
+                    <button class="btn btn-acc" onclick="closeM();autorizarChofer('${id}')">✅ Autorizar Chofer</button>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
+function autorizarChofer(id){
+    db.ref(`solicitudes_choferes/${id}`).once('value',snap=>{
+        const sol=snap.val();
+        const password=Math.random().toString(36).slice(-8);
+        auth.createUserWithEmailAndPassword(sol.email,password).then(u=>{
+            return db.ref(`choferes/${u.user.uid}`).set({
+                nombre:sol.nombre,email:sol.email,telefono:sol.telefono,
+                sitio:sol.sitio,placa:sol.placa,numero:sol.numero,
+                foto_chofer:sol.foto_chofer,foto_moto:sol.foto_moto,
+                estado:'activo',calificacion:0,total_servicios:0,servicios_hoy:0,
+                password:password,ubicacion:{lat:16.9516,lng:-96.7491}
+            });
+        }).then(()=>{
+            db.ref(`solicitudes_choferes/${id}`).update({estado:'autorizado',password:password});
+            toast('✅ Chofer autorizado. Contraseña: '+password+' | Email: '+sol.email);
+            loadSolicitudes();loadDrivers();loadStats();
+        }).catch(er=>toast('Error: '+er.message));
+    });
+}
+
+function loadServices(){db.ref('servicios').limitToLast(30).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="6">Sin viajes</td></tr>';return}Object.entries(d).reverse().forEach(([id,v])=>{let b=v.estado==='completado'?'badge-g':v.estado==='cancelado'||v.estado==='cancelado_chofer'?'badge-r':v.estado==='en_servicio'?'badge-y':'badge-b';let txt=v.estado==='cancelado_chofer'?'Cancelado chofer':v.estado;const cal=v.calificacion?v.calificacion.puntuacion:'-';h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${txt}</span></td><td>$${v.cobro||v.tarifa_estimada||0}</td><td>${cal!=='-'?'⭐'+cal:cal}</td></tr>`});document.getElementById('servicesBody').innerHTML=h})}
+function loadReports(){db.ref('reportes/objetos_olvidados').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="7">Sin reportes</td></tr>';return}Object.entries(d).reverse().forEach(([id,r])=>{h+=`<tr><td>${new Date(r.timestamp).toLocaleDateString()}</td><td>#${(r.servicioId||'').substring(0,5)}</td><td><span class="badge ${r.tipo==='chofer_reporta'?'badge-b':'badge-y'}">${r.tipo==='chofer_reporta'?'🛺':'👤'}</span></td><td>${(r.descripcion||'').substring(0,25)}</td><td>${r.foto?`<a href="${r.foto}" target="_blank" style="color:var(--acc)">📸</a>`:'-'}</td><td><span class="badge ${r.estado==='resuelto'?'badge-g':'badge-y'}">${r.estado||'pendiente'}</span></td><td>${r.estado!=='resuelto'?`<button class="btn-sm" onclick="resolveR('${id}')">✓</button>`:'-'}</td></tr>`});document.getElementById('reportsBody').innerHTML=h})}
+function resolveR(id){db.ref(`reportes/objetos_olvidados/${id}`).update({estado:'resuelto'}).then(()=>{toast('✅ Resuelto');loadReports()})}
+function loadFinances(){db.ref('admin/comisiones').limitToLast(30).once('value',s=>{const d=s.val();let h='',t=0,m=0;const hoy=new Date().toISOString().split('T')[0];if(!d){document.getElementById('commissionsBody').innerHTML='<tr><td colspan="4">Sin datos</td></tr>';return}Object.entries(d).reverse().forEach(([id,c])=>{if(c.fecha===hoy)t+=c.comision||0;m+=c.comision||0;h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`});document.getElementById('finToday').textContent='$'+t;document.getElementById('finMonth').textContent='$'+m;document.getElementById('commissionsBody').innerHTML=h})}
+function exportData(){db.ref('/').once('value',s=>{const data=JSON.stringify(s.val(),null,2);const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zaachila_backup.json';a.click();toast('📥 Exportado')})}
+function importData(){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>📤 Importar JSON</h3><p style="font-size:.7rem;color:var(--warn);margin-bottom:.5rem">⚠️ Esto sobrescribirá todos los datos</p><textarea id="jsonText" placeholder="Pega el JSON aquí..."></textarea><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="confirmImport()">Importar</button></div></div></div>`}
+function confirmImport(){try{const data=JSON.parse(document.getElementById('jsonText').value.trim());if(confirm('¿Estás seguro?')){db.ref('/').set(data).then(()=>{closeM();toast('✅ Importado');loadAll()})}}catch(e){toast('❌ JSON inválido')}}
+function tab(name,el){document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');document.getElementById('tab-'+name).style.display='block';document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('on'));el.classList.add('on');if(name==='drivers')loadDrivers();if(name==='solicitudes')loadSolicitudes();if(name==='services')loadServices();if(name==='reports')loadReports();if(name==='finances')loadFinances()}
+function closeM(){document.getElementById('modalContainer').innerHTML=''}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2500)}
+document.addEventListener('keypress',e=>{if(e.key=='Enter'&&document.getElementById('loginScreen').style.display!=='none')login()});
+</script>
+</body>
+</html>gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
