@@ -90,7 +90,56 @@ function confirmDel(id){db.ref(`choferes/${id}`).remove().then(()=>{closeM();toa
 function loadSolicitudes(){db.ref('solicitudes_choferes').limitToLast(30).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('solicitudesBody').innerHTML='<tr><td colspan="10">Sin solicitudes</td></tr>';return}Object.entries(d).reverse().forEach(([id,sol])=>{const fid='f'+id.replace(/[^a-zA-Z0-9]/g,'');const fotos=[];if(sol.foto_chofer)fotos.push(`<img src="${sol.foto_chofer}" class="photo-thumb ${fid}" onclick="window.open('${sol.foto_chofer}')">`);if(sol.foto_moto)fotos.push(`<img src="${sol.foto_moto}" class="photo-thumb ${fid}" onclick="window.open('${sol.foto_moto}')">`);if(sol.foto_placa)fotos.push(`<img src="${sol.foto_placa}" class="photo-thumb ${fid}" onclick="window.open('${sol.foto_placa}')">`);let bc='badge-y',txt='pendiente';if(sol.estado==='autorizado'){bc='badge-g';txt='autorizado'}if(sol.estado==='declinado'){bc='badge-r';txt='declinado'}h+=`<tr><td>${sol.nombre||'-'}</td><td>${sol.email||'-'}</td><td>${sol.telefono||'-'}</td><td>${sol.sitio||'-'}</td><td>${sol.placa||'-'}</td><td>${sol.numero||'-'}</td><td>${sol.color||'-'}</td><td><span id="fotos_${fid}">${fotos.join(' ')}</span> ${fotos.length>0?`<button class="btn-xs btn-sm" onclick="toggleFotos('${fid}')">👁️</button>`:''}</td><td><span class="badge ${bc}">${txt}</span></td><td style="display:flex;gap:3px">${sol.estado==='pendiente'?`<button class="btn-xs btn-sm" onclick="autorizarChofer('${id}')">✅</button><button class="btn-xs" onclick="declinarSolicitud('${id}')" style="background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3)">❌</button>`:''}<button class="btn-xs" onclick="eliminarSolicitud('${id}')" style="background:rgba(255,71,87,.1);color:var(--red);border:1px solid var(--red)">🗑️</button></td></tr>`});document.getElementById('solicitudesBody').innerHTML=h})}
 function toggleFotos(fid){const fotos=document.querySelectorAll('.'+fid);const span=document.getElementById('fotos_'+fid);if(span.style.display==='none'){span.style.display='inline';fotos.forEach(f=>f.style.display='inline-block')}else{span.style.display='none';fotos.forEach(f=>f.style.display='none')}}
 function eliminarSolicitud(id){if(confirm('¿Eliminar esta solicitud?')){db.ref(`solicitudes_choferes/${id}`).remove().then(()=>{toast('🗑️ Eliminada');loadSolicitudes();loadStats()}).catch(er=>toast(er.message))}}
-function autorizarChofer(id){db.ref(`solicitudes_choferes/${id}`).once('value',snap=>{const sol=snap.val();if(!sol.email||!sol.email.includes('@')){toast('❌ Email inválido');return}const password=Math.random().toString(36).slice(-8);auth.createUserWithEmailAndPassword(sol.email,password).then(u=>db.ref(`choferes/${u.user.uid}`).set({nombre:sol.nombre,email:sol.email,telefono:sol.telefono,sitio:sol.sitio,placa:sol.placa,numero:sol.numero,color:sol.color,foto_chofer:sol.foto_chofer,foto_moto:sol.foto_moto,foto_placa:sol.foto_placa,estado:'activo',calificacion:0,total_servicios:0,servicios_hoy:0,password:password,ubicacion:{lat:16.9516,lng:-96.7491}})).then(()=>{db.ref(`solicitudes_choferes/${id}`).update({estado:'autorizado',password:password});const msg=`🛺 *Zaachila Moto* - Cuenta Aprobada%0A👤 ${sol.nombre}%0A📧 ${sol.email}%0A🔒 ${password}%0A📲 https://spiffy-sunshine-337158.netlify.app`;window.open(`https://wa.me/52${sol.telefono.replace(/\D/g,'')}?text=${msg}`,'_blank');toast('✅ Autorizado');loadSolicitudes();loadDrivers();loadStats()}).catch(er=>toast('Error: '+er.message))})}
+
+// ✅ AUTORIZAR CORREGIDO (SIN BUCLE)
+function autorizarChofer(id){
+    db.ref(`solicitudes_choferes/${id}`).once('value', snap => {
+        const sol = snap.val();
+        if(!sol.email || !sol.email.includes('@')){ toast('❌ Email inválido'); return; }
+        
+        const password = Math.random().toString(36).slice(-8);
+        
+        // Verificar si el email ya existe
+        auth.fetchSignInMethodsForEmail(sol.email).then(methods => {
+            if(methods && methods.length > 0){
+                // Ya existe - iniciar sesión para obtener UID
+                toast('⚠️ Email ya registrado. Actualizando...');
+                return auth.signInWithEmailAndPassword(sol.email, password).catch(() => {
+                    return auth.createUserWithEmailAndPassword(sol.email, password);
+                });
+            } else {
+                return auth.createUserWithEmailAndPassword(sol.email, password);
+            }
+        }).then(u => {
+            const uid = u.user.uid;
+            return db.ref(`choferes/${uid}`).set({
+                nombre: sol.nombre, email: sol.email, telefono: sol.telefono,
+                sitio: sol.sitio, placa: sol.placa, numero: sol.numero,
+                color: sol.color, foto_chofer: sol.foto_chofer,
+                foto_moto: sol.foto_moto, foto_placa: sol.foto_placa,
+                estado: 'activo', calificacion: 0, total_servicios: 0,
+                servicios_hoy: 0, password: password,
+                ubicacion: { lat: 16.9516, lng: -96.7491 }
+            });
+        }).then(() => {
+            return db.ref(`solicitudes_choferes/${id}`).update({ estado: 'autorizado', password: password });
+        }).then(() => {
+            toast('✅ Autorizado');
+            loadSolicitudes(); loadDrivers(); loadStats();
+            const tel = sol.telefono.replace(/\D/g, '');
+            const msg = `🛺 *Zaachila Moto* - Cuenta Aprobada%0A👤 ${sol.nombre}%0A📧 ${sol.email}%0A🔒 ${password}%0A📲 https://spiffy-sunshine-337158.netlify.app`;
+            if(tel) window.open(`https://wa.me/52${tel}?text=${msg}`, '_blank');
+        }).catch(er => {
+            console.error('Error:', er);
+            if(er.code === 'auth/email-already-in-use'){
+                toast('⚠️ Email ya existe. Datos actualizados.');
+            } else {
+                toast('❌ Error: ' + er.message);
+            }
+        });
+    });
+}
+
 function declinarSolicitud(id){if(confirm('¿Declinar?')){db.ref(`solicitudes_choferes/${id}`).update({estado:'declinado'}).then(()=>{toast('❌ Declinada');loadSolicitudes();loadStats()})}}
 function loadServices(){db.ref('servicios').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="5">Sin viajes</td></tr>';return}Object.entries(d).reverse().forEach(([id,v])=>{let b=v.estado==='completado'?'badge-g':v.estado==='cancelado'?'badge-r':'badge-y';h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${v.estado}</span></td><td>$${v.cobro||0}</td></tr>`});document.getElementById('servicesBody').innerHTML=h})}
 function loadReports(){db.ref('reportes/objetos_olvidados').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="5">Sin reportes</td></tr>';return}Object.entries(d).reverse().forEach(([id,r])=>{h+=`<tr><td>${new Date(r.timestamp).toLocaleDateString()}</td><td>#${(r.servicioId||'').substring(0,5)}</td><td>${r.tipo==='chofer_reporta'?'🛺':'👤'}</td><td>${(r.descripcion||'').substring(0,20)}</td><td><span class="badge ${r.estado==='resuelto'?'badge-g':'badge-y'}">${r.estado||'pendiente'}</span></td></tr>`});document.getElementById('reportsBody').innerHTML=h})}
