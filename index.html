@@ -22,7 +22,6 @@
         .btn-acc{background:linear-gradient(135deg,var(--acc),#4834d4);color:#fff;letter-spacing:.5px}
         .btn-acc:hover{opacity:.9;transform:translateY(-1px)}.btn-acc:disabled{opacity:.5;cursor:not-allowed;transform:none}
         .login-err{background:rgba(255,71,87,.1);border:1px solid var(--red);padding:.7rem;border-radius:var(--r);margin-bottom:.7rem;font-size:.75rem;display:none;text-align:center}
-        .attempts-info{font-size:.65rem;color:var(--txt3);margin-top:1rem}
         .dashboard{display:none}.topbar{background:var(--bg2);padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
         .topbar h2{font-size:1rem}.topbar-actions{display:flex;gap:.4rem;align-items:center}
         .btn-sm{padding:.35rem .7rem;border-radius:8px;font-size:.7rem;cursor:pointer;background:var(--card);border:1px solid var(--bd);color:var(--txt2);white-space:nowrap}.btn-sm:hover{background:var(--bd)}
@@ -46,21 +45,9 @@
     </style>
 </head>
 <body>
-<div id="loginScreen" class="login-screen">
-    <div class="login-box">
-        <div class="logo">🛺</div>
-        <h1>Zaachila Moto</h1>
-        <div class="subtitle">PANEL DE ADMINISTRACIÓN</div>
-        <div id="loginError" class="login-err"></div>
-        <input type="text" id="username" class="inp" placeholder="Usuario" autocomplete="off">
-        <input type="password" id="password" class="inp" placeholder="Contraseña">
-        <button class="btn btn-acc" id="loginBtn" onclick="login()">🔐 Ingresar</button>
-        <div class="attempts-info" id="attemptsInfo"></div>
-    </div>
-</div>
-
+<div id="loginScreen" class="login-screen"><div class="login-box"><div class="logo">🛺</div><h1>Zaachila Moto Admin</h1><div class="subtitle">PANEL DE ADMINISTRACIÓN</div><div id="loginError" class="login-err"></div><input type="email" id="email" class="inp" placeholder="Email"><input type="password" id="password" class="inp" placeholder="Contraseña"><button class="btn btn-acc" id="loginBtn" onclick="login()">Ingresar</button></div></div>
 <div id="dashboard" class="dashboard">
-    <header class="topbar"><h2>🛺 Zaachila Moto</h2><div class="topbar-actions"><span style="font-size:.75rem;color:var(--txt2)" id="adminName">Admin</span><button class="btn-sm" onclick="exportData()">📥</button><button class="btn-sm" onclick="importData()">📤</button><button class="btn-sm" onclick="logoutAdmin()">Salir</button></div></header>
+    <header class="topbar"><h2>🛺 Zaachila Moto</h2><div class="topbar-actions"><span style="font-size:.75rem;color:var(--txt2)" id="adminName">Admin</span><button class="btn-sm" onclick="exportData()">📥</button><button class="btn-sm" onclick="importData()">📤</button><button class="btn-sm" onclick="auth.signOut();location.reload()">Salir</button></div></header>
     <div class="layout">
         <nav class="sidebar">
             <a class="on" onclick="tab('overview',this)">📊 Panel</a>
@@ -84,105 +71,10 @@
 
 <script>
 const fb={apiKey:"AIzaSyCBXBPMz2OZ3U2KfTaU-uHCBhwmbnR7O40",authDomain:"zaachilamoto.firebaseapp.com",databaseURL:"https://zaachilamoto-default-rtdb.firebaseio.com",projectId:"zaachilamoto",storageBucket:"zaachilamoto.firebasestorage.app",messagingSenderId:"559788509526",appId:"1:559788509526:web:c751d8d22068f09041aef7"};
-firebase.initializeApp(fb);const db=firebase.database();
-console.log('✅ Firebase listo');
+firebase.initializeApp(fb);const auth=firebase.auth(),db=firebase.database();console.log('✅ Firebase listo');
 
-// ========== SEGURIDAD SHA-256 ==========
-const ADMIN_CONFIG = {
-    username: 'Emmanuel',
-    passwordHash: '542449dba381be608ad6b936e9e92c1d7389271a3b444c4ebd0348a2e3f45fb1',
-    maxAttempts: 5,
-    blockTime: 15
-};
-
-let loginAttempts = parseInt(localStorage.getItem('adm_att') || '0');
-let blockedUntil = parseInt(localStorage.getItem('adm_block') || '0');
-
-async function sha256(message) {
-    const msgBuffer = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-if (blockedUntil > 0 && Date.now() > blockedUntil) {
-    loginAttempts = 0; blockedUntil = 0;
-    localStorage.removeItem('adm_att'); localStorage.removeItem('adm_block');
-}
-
-function updateAttemptsInfo() {
-    const info = document.getElementById('attemptsInfo');
-    if (blockedUntil > 0 && Date.now() < blockedUntil) {
-        const min = Math.ceil((blockedUntil - Date.now()) / 60000);
-        info.textContent = `🚫 Bloqueado por ${min} minuto(s)`;
-    } else if (loginAttempts > 0) {
-        info.textContent = `⚠️ ${ADMIN_CONFIG.maxAttempts - loginAttempts} intento(s) restante(s)`;
-    } else { info.textContent = ''; }
-}
-updateAttemptsInfo();
-
-async function login() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const err = document.getElementById('loginError');
-    const btn = document.getElementById('loginBtn');
-    
-    if (blockedUntil > 0 && Date.now() < blockedUntil) {
-        const min = Math.ceil((blockedUntil - Date.now()) / 60000);
-        err.textContent = `🚫 Bloqueado. Espera ${min} minuto(s).`;
-        err.style.display = 'block'; return;
-    }
-    
-    if (!username || !password) {
-        err.textContent = 'Completa todos los campos';
-        err.style.display = 'block'; return;
-    }
-    
-    btn.disabled = true; btn.textContent = 'Verificando...'; err.style.display = 'none';
-    
-    try {
-        const inputHash = await sha256(password);
-        
-        if (username === ADMIN_CONFIG.username && inputHash === ADMIN_CONFIG.passwordHash) {
-            loginAttempts = 0;
-            localStorage.removeItem('adm_att'); localStorage.removeItem('adm_block');
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('adminName').textContent = username;
-            localStorage.setItem('admin_logged', 'true');
-            loadAll();
-        } else {
-            loginAttempts++;
-            localStorage.setItem('adm_att', loginAttempts.toString());
-            if (loginAttempts >= ADMIN_CONFIG.maxAttempts) {
-                blockedUntil = Date.now() + (ADMIN_CONFIG.blockTime * 60000);
-                localStorage.setItem('adm_block', blockedUntil.toString());
-                err.textContent = `🚫 Bloqueado por ${ADMIN_CONFIG.blockTime} minutos.`;
-            } else {
-                err.textContent = `❌ Credenciales incorrectas. ${ADMIN_CONFIG.maxAttempts - loginAttempts} intento(s) restante(s).`;
-            }
-            err.style.display = 'block'; updateAttemptsInfo();
-        }
-    } catch (e) {
-        err.textContent = 'Error de sistema. Recarga la página.';
-        err.style.display = 'block';
-    }
-    btn.disabled = false; btn.textContent = '🔐 Ingresar';
-}
-
-function logoutAdmin() {
-    localStorage.removeItem('admin_logged');
-    location.reload();
-}
-
-if (localStorage.getItem('admin_logged') === 'true') {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('adminName').textContent = ADMIN_CONFIG.username;
-    loadAll();
-}
-
-// ========== FUNCIONES DEL ADMIN (LAS MISMAS DE SIEMPRE) ==========
+function login(){const e=document.getElementById('email').value.trim(),p=document.getElementById('password').value,err=document.getElementById('loginError'),btn=document.getElementById('loginBtn');if(!e||!p){err.textContent='Completa los campos';err.style.display='block';return}btn.disabled=true;btn.textContent='...';err.style.display='none';auth.signInWithEmailAndPassword(e,p).then(u=>{document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('adminName').textContent=u.user.email.split('@')[0];loadAll()}).catch(er=>{err.textContent='Error: '+er.message;err.style.display='block';btn.disabled=false;btn.textContent='Ingresar'})}
+auth.onAuthStateChanged(u=>{if(u){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('adminName').textContent=(u.email||'Admin').split('@')[0];loadAll()}});
 function loadAll(){loadStats();loadDrivers();loadSolicitudes();loadServices();loadReports();loadFinances()}
 function loadStats(){db.ref('choferes').orderByChild('estado').equalTo('activo').on('value',s=>document.getElementById('stActive').textContent=s.numChildren());db.ref('servicios').orderByChild('estado').equalTo('en_servicio').on('value',s=>document.getElementById('stServices').textContent=s.numChildren());const hoy=new Date().toISOString().split('T')[0];db.ref(`admin/ganancias/${hoy}`).on('value',s=>document.getElementById('stEarnings').textContent='$'+(s.val()||0));db.ref('solicitudes_choferes').orderByChild('estado').equalTo('pendiente').on('value',s=>document.getElementById('stSolicitudes').textContent=s.numChildren())}
 function loadDrivers(){db.ref('choferes').once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('driversBody').innerHTML='<tr><td colspan="11">Sin choferes</td></tr>';return}Object.entries(d).forEach(([id,c])=>{const b=c.estado==='activo'?'badge-g':c.estado==='suspendido'?'badge-r':'badge-y';const fotos=[];if(c.foto_chofer)fotos.push(`<img src="${c.foto_chofer}" class="photo-thumb" onclick="window.open('${c.foto_chofer}')">`);if(c.foto_moto)fotos.push(`<img src="${c.foto_moto}" class="photo-thumb" onclick="window.open('${c.foto_moto}')">`);if(c.foto_placa)fotos.push(`<img src="${c.foto_placa}" class="photo-thumb" onclick="window.open('${c.foto_placa}')">`);h+=`<tr><td>${c.nombre||'-'}</td><td>${c.email||'-'}</td><td>${c.placa||'-'}</td><td>${c.color||'-'}</td><td>${c.numero||c.unidad||'-'}</td><td>${c.telefono||'-'}</td><td><span class="badge ${b}">${c.estado||'-'}</span></td><td>${c.calificacion||'0'}</td><td>${fotos.join(' ')}</td><td><span class="pass-box">${c.password||'N/D'}</span></td><td style="display:flex;gap:3px"><button class="btn-xs btn-sm" onclick="editD('${id}')">✏️</button><button class="btn-xs btn-sm" onclick="resetP('${id}')">🔑</button><button class="btn-xs btn-sm" onclick="delD('${id}')" style="background:rgba(255,71,87,.15);color:var(--red)">🗑️</button>${c.telefono?`<button class="btn-xs btn-wa" onclick="sendWA('${c.telefono}','${c.nombre}','${c.email}','${c.password||''}')">💬</button>`:''}</td></tr>`});document.getElementById('driversBody').innerHTML=h})}
