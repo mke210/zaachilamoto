@@ -70,7 +70,7 @@
             <div id="tab-drivers" style="display:none"><div class="panel"><h3>🛺 Choferes <button class="btn-sm" onclick="addDriver()" style="margin-left:auto">+ Nuevo</button></h3><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Email</th><th>Placa</th><th>Color</th><th>Unidad</th><th>Tel</th><th>Estado</th><th>⭐</th><th>Radio</th><th>Fotos</th><th>Pass</th><th></th></tr></thead><tbody id="driversBody"><tr><td colspan="12">Cargando...</td></tr></tbody></table></div></div></div>
             <div id="tab-solicitudes" style="display:none"><div class="panel"><h3>📝 Solicitudes</h3><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Email</th><th>Tel</th><th>Sitio</th><th>Placa</th><th>N°</th><th>Color</th><th>Fotos</th><th>Estado</th><th></th></tr></thead><tbody id="solicitudesBody"><tr><td colspan="10">Cargando...</td></tr></tbody></table></div></div></div>
             <div id="tab-services" style="display:none"><div class="panel"><h3>📋 Viajes</h3><div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Origen</th><th>Destino</th><th>Estado</th><th>$</th></tr></thead><tbody id="servicesBody"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div></div>
-            <div id="tab-reports" style="display:none"><div class="panel"><h3>📦 Reportes de Objetos Olvidados</h3><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Descripción</th><th>Chofer</th><th>Placa</th><th>Tel Chofer</th><th>Cliente</th><th>Recompensa</th><th>Estado</th></tr></thead><tbody id="reportsBody"><tr><td colspan="10">Cargando...</td></tr></tbody></table></div></div></div>
+            <div id="tab-reports" style="display:none"><div class="panel"><h3>📦 Reportes de Objetos Olvidados</h3><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Descripción</th><th>Pasajero</th><th>Chofer</th><th>Placa</th><th>Tel Chofer</th><th>Recompensa</th><th>Estado</th></tr></thead><tbody id="reportsBody"><tr><td colspan="10">Cargando...</td></tr></tbody></table></div></div></div>
             <div id="tab-finances" style="display:none"><div class="panel"><h3>💰 Comisiones</h3><div class="cards"><div class="card"><div class="lbl">Hoy</div><div class="val" style="font-size:1.5rem" id="finToday">$0</div></div></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Viaje</th><th>Monto</th><th>10%</th></tr></thead><tbody id="commissionsBody"><tr><td colspan="4">Cargando...</td></tr></tbody></table></div></div></div>
         </div>
     </div>
@@ -93,9 +93,7 @@ function listenLiveSolicitudes(){
         document.getElementById('liveNotif').textContent = '🔔 Nueva: ' + (sol.nombre || 'Chofer');
         document.getElementById('solicitudesBadge').style.display = 'inline-block';
         playSound('notif');
-        setTimeout(() => {
-            document.getElementById('liveNotif').style.display = 'none';
-        }, 8000);
+        setTimeout(() => { document.getElementById('liveNotif').style.display = 'none'; }, 8000);
     });
 }
 
@@ -123,10 +121,7 @@ function toggleEstado(choferId){
         const actual = snap.val() || 'inactivo';
         const nuevo = actual === 'activo' ? 'suspendido' : 'activo';
         db.ref(`choferes/${choferId}`).update({ estado: nuevo })
-            .then(() => {
-                toast(nuevo === 'activo' ? '▶️ Chofer ACTIVADO' : '⏸️ Chofer SUSPENDIDO');
-                loadDrivers(); loadStats();
-            });
+            .then(() => { toast(nuevo === 'activo' ? '▶️ Chofer ACTIVADO' : '⏸️ Chofer SUSPENDIDO'); loadDrivers(); loadStats(); });
     });
 }
 
@@ -153,7 +148,7 @@ function loadReports(){
         if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="10">Sin reportes</td></tr>';return}
         const entries=Object.entries(d).reverse();
         for(const [id,r] of entries){
-            let choferNombre='-',choferPlaca='-',choferTel='-',clienteNombre='-';
+            let choferNombre='-',choferPlaca='-',choferTel='-',nombrePasajero=r.nombrePasajero||'-';
             if(r.choferId){
                 try{
                     const snap=await db.ref(`choferes/${r.choferId}`).once('value');
@@ -163,22 +158,24 @@ function loadReports(){
                     choferTel=ch.telefono||'-';
                 }catch(e){}
             }
-            if(r.servicioId){
-                try{
-                    const snap=await db.ref(`servicios/${r.servicioId}`).once('value');
-                    const sv=snap.val()||{};
-                    clienteNombre=sv.clienteId?'Pasajero #'+sv.clienteId.substring(0,5):'-';
-                }catch(e){}
+            if(!nombrePasajero||nombrePasajero==='-'){
+                if(r.servicioId){
+                    try{
+                        const snap=await db.ref(`servicios/${r.servicioId}`).once('value');
+                        const sv=snap.val()||{};
+                        nombrePasajero=sv.nombrePasajero||'-';
+                    }catch(e){}
+                }
             }
             h+=`<tr>
                 <td>${new Date(r.timestamp).toLocaleDateString()}</td>
                 <td>#${(r.servicioId||'').substring(0,5)}</td>
                 <td>${r.tipo==='chofer_reporta'?'🛺 Chofer':r.tipo==='cliente_reporta'?'👤 Cliente':'👤'}</td>
                 <td>${(r.descripcion||'').substring(0,25)}</td>
+                <td>${nombrePasajero}</td>
                 <td>${choferNombre}</td>
                 <td>${choferPlaca}</td>
                 <td>${choferTel}</td>
-                <td>${clienteNombre}</td>
                 <td>${r.recompensa?'💰 $'+r.recompensa:'-'}</td>
                 <td><span class="badge ${r.estado==='entregado'?'badge-g':r.estado==='pendiente'?'badge-y':'badge-r'}">${r.estado||'pendiente'}</span></td>
             </tr>`;
