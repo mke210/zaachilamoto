@@ -70,7 +70,7 @@
             <div id="tab-drivers" style="display:none"><div class="panel"><h3>🛺 Choferes <button class="btn-sm" onclick="addDriver()" style="margin-left:auto">+ Nuevo</button></h3><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Email</th><th>Placa</th><th>Color</th><th>Unidad</th><th>Tel</th><th>Estado</th><th>⭐</th><th>Radio</th><th>Fotos</th><th>Pass</th><th></th></tr></thead><tbody id="driversBody"><tr><td colspan="12">Cargando...</td></tr></tbody></table></div></div></div>
             <div id="tab-solicitudes" style="display:none"><div class="panel"><h3>📝 Solicitudes</h3><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Email</th><th>Tel</th><th>Sitio</th><th>Placa</th><th>N°</th><th>Color</th><th>Fotos</th><th>Estado</th><th></th></tr></thead><tbody id="solicitudesBody"><tr><td colspan="10">Cargando...</td></tr></tbody></table></div></div></div>
             <div id="tab-services" style="display:none"><div class="panel"><h3>📋 Viajes</h3><div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Origen</th><th>Destino</th><th>Estado</th><th>$</th></tr></thead><tbody id="servicesBody"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div></div>
-            <div id="tab-reports" style="display:none"><div class="panel"><h3>📦 Reportes</h3><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Descripción</th><th>Estado</th></tr></thead><tbody id="reportsBody"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div></div>
+            <div id="tab-reports" style="display:none"><div class="panel"><h3>📦 Reportes de Objetos Olvidados</h3><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Descripción</th><th>Chofer</th><th>Placa</th><th>Tel Chofer</th><th>Cliente</th><th>Recompensa</th><th>Estado</th></tr></thead><tbody id="reportsBody"><tr><td colspan="10">Cargando...</td></tr></tbody></table></div></div></div>
             <div id="tab-finances" style="display:none"><div class="panel"><h3>💰 Comisiones</h3><div class="cards"><div class="card"><div class="lbl">Hoy</div><div class="val" style="font-size:1.5rem" id="finToday">$0</div></div></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Viaje</th><th>Monto</th><th>10%</th></tr></thead><tbody id="commissionsBody"><tr><td colspan="4">Cargando...</td></tr></tbody></table></div></div></div>
         </div>
     </div>
@@ -86,7 +86,6 @@ auth.onAuthStateChanged(u=>{if(u){document.getElementById('loginScreen').style.d
 function loadAll(){loadStats();loadDrivers();loadSolicitudes();loadServices();loadReports();loadFinances()}
 function loadStats(){db.ref('choferes').orderByChild('estado').equalTo('activo').on('value',s=>document.getElementById('stActive').textContent=s.numChildren());db.ref('servicios').orderByChild('estado').equalTo('en_servicio').on('value',s=>document.getElementById('stServices').textContent=s.numChildren());const hoy=new Date().toISOString().split('T')[0];db.ref(`admin/ganancias/${hoy}`).on('value',s=>document.getElementById('stEarnings').textContent='$'+(s.val()||0));db.ref('solicitudes_choferes').orderByChild('estado').equalTo('pendiente').on('value',s=>document.getElementById('stSolicitudes').textContent=s.numChildren())}
 
-// ✅ NOTIFICACIÓN EN TIEMPO REAL DE NUEVAS SOLICITUDES
 function listenLiveSolicitudes(){
     db.ref('solicitudes_choferes').orderByChild('estado').equalTo('pendiente').on('child_added', s => {
         const sol = s.val();
@@ -102,7 +101,6 @@ function listenLiveSolicitudes(){
 
 function playSound(t){try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=600;g.gain.value=.2;o.start();o.stop(c.currentTime+.3)}catch(e){}}
 
-// ✅ VER FOTO EN MODAL
 function verFoto(url, titulo) {
     document.getElementById('modalContainer').innerHTML = `
         <div class="modal-overlay" onclick="closeM()">
@@ -118,10 +116,8 @@ function verFoto(url, titulo) {
         </div>`;
 }
 
-// ✅ CHOFERES CON SUSPENDER/ACTIVAR Y WHATSAPP
 function loadDrivers(){db.ref('choferes').once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('driversBody').innerHTML='<tr><td colspan="12">Sin choferes</td></tr>';return}Object.entries(d).forEach(([id,c])=>{const fid='d'+id.replace(/[^a-zA-Z0-9]/g,'');const b=c.estado==='activo'?'badge-g':c.estado==='suspendido'?'badge-o':'badge-y';const radioIlimitado=c.radio_ilimitado===true;const fotos=[];if(c.foto_chofer)fotos.push(`<img src="${c.foto_chofer}" class="photo-thumb ${fid}" onclick="verFoto('${c.foto_chofer}','Foto Chofer - ${c.nombre||'N/A'}')">`);if(c.foto_moto)fotos.push(`<img src="${c.foto_moto}" class="photo-thumb ${fid}" onclick="verFoto('${c.foto_moto}','Foto Mototaxi - ${c.nombre||'N/A'}')">`);if(c.foto_placa)fotos.push(`<img src="${c.foto_placa}" class="photo-thumb ${fid}" onclick="verFoto('${c.foto_placa}','Foto Placa - ${c.nombre||'N/A'}')">`);h+=`<tr><td>${c.nombre||'-'}</td><td>${c.email||'-'}</td><td>${c.placa||'-'}</td><td>${c.color||'-'}</td><td>${c.numero||c.unidad||'-'}</td><td>${c.telefono||'-'}</td><td><span class="badge ${b}">${c.estado||'-'}</span></td><td>${c.calificacion||'0'}</td><td><button class="${radioIlimitado?'btn-radio-on':'btn-radio-off'}" onclick="toggleRadio('${id}')">${radioIlimitado?'🌐 Ilimitado':'📍 500m'}</button></td><td><span id="fotos_${fid}">${fotos.join(' ')}</span> ${fotos.length>0?`<button class="btn-xs btn-sm" onclick="toggleFotos('${fid}')">👁️</button>`:''}</td><td><span class="pass-box">${c.password||'N/D'}</span></td><td style="display:flex;gap:3px"><button class="btn-xs btn-sm" onclick="editD('${id}')">✏️</button><button class="btn-xs btn-sm" onclick="resetP('${id}')">🔑</button>${c.estado==='activo'?`<button class="btn-xs btn-suspend" onclick="toggleEstado('${id}')">⏸️</button>`:`<button class="btn-xs btn-activate" onclick="toggleEstado('${id}')">▶️</button>`}<button class="btn-xs btn-sm" onclick="delD('${id}')" style="background:rgba(255,71,87,.15);color:var(--red)">🗑️</button>${c.telefono?`<button class="btn-xs btn-wa" onclick="sendWA('${c.telefono}','${c.nombre}','${c.email}','${c.password||''}')"><i class="fab fa-whatsapp"></i></button>`:''}</td></tr>`});document.getElementById('driversBody').innerHTML=h})}
 
-// ✅ TOGGLE SUSPENDER/ACTIVAR
 function toggleEstado(choferId){
     db.ref(`choferes/${choferId}/estado`).once('value', snap => {
         const actual = snap.val() || 'inactivo';
@@ -150,7 +146,46 @@ function eliminarSolicitud(id){if(confirm('¿Eliminar esta solicitud?')){db.ref(
 function autorizarChofer(id){db.ref(`solicitudes_choferes/${id}`).once('value',snap=>{const sol=snap.val();if(!sol.email||!sol.email.includes('@')){toast('❌ Email inválido');return}const password=Math.random().toString(36).slice(-8);auth.fetchSignInMethodsForEmail(sol.email).then(methods=>{if(methods&&methods.length>0){toast('⚠️ Email ya registrado. Actualizando...');return auth.signInWithEmailAndPassword(sol.email,password).catch(()=>auth.createUserWithEmailAndPassword(sol.email,password))}else{return auth.createUserWithEmailAndPassword(sol.email,password)}}).then(u=>{return db.ref(`choferes/${u.user.uid}`).set({nombre:sol.nombre,email:sol.email,telefono:sol.telefono,sitio:sol.sitio,placa:sol.placa,numero:sol.numero,color:sol.color,foto_chofer:sol.foto_chofer,foto_moto:sol.foto_moto,foto_placa:sol.foto_placa,radio_ilimitado:false,estado:'activo',calificacion:0,total_servicios:0,servicios_hoy:0,password:password,ubicacion:{lat:16.9516,lng:-96.7491}})}).then(()=>{return db.ref(`solicitudes_choferes/${id}`).update({estado:'autorizado',password:password})}).then(()=>{toast('✅ Autorizado');loadSolicitudes();loadDrivers();loadStats();const tel=sol.telefono.replace(/\D/g,'');const msg=`🛺 *Zaachila Moto* - Cuenta Aprobada%0A👤 ${sol.nombre}%0A📧 ${sol.email}%0A🔒 ${password}%0A📲 https://spiffy-sunshine-337158.netlify.app`;if(tel)window.open(`https://wa.me/52${tel}?text=${msg}`,'_blank')}).catch(er=>{console.error('Error:',er);toast('❌ Error: '+er.message)})})}
 function declinarSolicitud(id){if(confirm('¿Declinar?')){db.ref(`solicitudes_choferes/${id}`).update({estado:'declinado'}).then(()=>{toast('❌ Declinada');loadSolicitudes();loadStats()})}}
 function loadServices(){db.ref('servicios').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="5">Sin viajes</td></tr>';return}Object.entries(d).reverse().forEach(([id,v])=>{let b=v.estado==='completado'?'badge-g':v.estado==='cancelado'?'badge-r':'badge-y';h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${v.estado}</span></td><td>$${v.cobro||0}</td></tr>`});document.getElementById('servicesBody').innerHTML=h})}
-function loadReports(){db.ref('reportes/objetos_olvidados').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="5">Sin reportes</td></tr>';return}Object.entries(d).reverse().forEach(([id,r])=>{h+=`<tr><td>${new Date(r.timestamp).toLocaleDateString()}</td><td>#${(r.servicioId||'').substring(0,5)}</td><td>${r.tipo==='chofer_reporta'?'🛺':'👤'}</td><td>${(r.descripcion||'').substring(0,20)}</td><td><span class="badge ${r.estado==='resuelto'?'badge-g':'badge-y'}">${r.estado||'pendiente'}</span></td></tr>`});document.getElementById('reportsBody').innerHTML=h})}
+function loadReports(){
+    db.ref('reportes/objetos_olvidados').limitToLast(30).once('value',async s=>{
+        const d=s.val();
+        let h='';
+        if(!d){document.getElementById('reportsBody').innerHTML='<tr><td colspan="10">Sin reportes</td></tr>';return}
+        const entries=Object.entries(d).reverse();
+        for(const [id,r] of entries){
+            let choferNombre='-',choferPlaca='-',choferTel='-',clienteNombre='-';
+            if(r.choferId){
+                try{
+                    const snap=await db.ref(`choferes/${r.choferId}`).once('value');
+                    const ch=snap.val()||{};
+                    choferNombre=ch.nombre||'-';
+                    choferPlaca=ch.placa||'-';
+                    choferTel=ch.telefono||'-';
+                }catch(e){}
+            }
+            if(r.servicioId){
+                try{
+                    const snap=await db.ref(`servicios/${r.servicioId}`).once('value');
+                    const sv=snap.val()||{};
+                    clienteNombre=sv.clienteId?'Pasajero #'+sv.clienteId.substring(0,5):'-';
+                }catch(e){}
+            }
+            h+=`<tr>
+                <td>${new Date(r.timestamp).toLocaleDateString()}</td>
+                <td>#${(r.servicioId||'').substring(0,5)}</td>
+                <td>${r.tipo==='chofer_reporta'?'🛺 Chofer':r.tipo==='cliente_reporta'?'👤 Cliente':'👤'}</td>
+                <td>${(r.descripcion||'').substring(0,25)}</td>
+                <td>${choferNombre}</td>
+                <td>${choferPlaca}</td>
+                <td>${choferTel}</td>
+                <td>${clienteNombre}</td>
+                <td>${r.recompensa?'💰 $'+r.recompensa:'-'}</td>
+                <td><span class="badge ${r.estado==='entregado'?'badge-g':r.estado==='pendiente'?'badge-y':'badge-r'}">${r.estado||'pendiente'}</span></td>
+            </tr>`;
+        }
+        document.getElementById('reportsBody').innerHTML=h;
+    });
+}
 function loadFinances(){db.ref('admin/comisiones').limitToLast(20).once('value',s=>{const d=s.val();let h='',t=0;const hoy=new Date().toISOString().split('T')[0];if(!d){document.getElementById('commissionsBody').innerHTML='<tr><td colspan="4">Sin datos</td></tr>';return}Object.entries(d).reverse().forEach(([id,c])=>{if(c.fecha===hoy)t+=c.comision||0;h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`});document.getElementById('finToday').textContent='$'+t;document.getElementById('commissionsBody').innerHTML=h})}
 function exportData(){db.ref('/').once('value',s=>{const data=JSON.stringify(s.val(),null,2);const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zaachila_backup.json';a.click();toast('📥 Exportado')})}
 function importData(){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>📤 Importar</h3><p style="font-size:.7rem;color:var(--warn)">⚠️ Sobrescribirá datos</p><textarea id="jsonText" placeholder="Pega el JSON..."></textarea><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="confirmImport()">Importar</button></div></div></div>`}
