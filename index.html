@@ -26,12 +26,13 @@
         .topbar h2{font-size:1rem}.topbar-actions{display:flex;gap:.4rem;align-items:center}
         .btn-sm{padding:.35rem .7rem;border-radius:8px;font-size:.7rem;cursor:pointer;background:var(--card);border:1px solid var(--bd);color:var(--txt2);white-space:nowrap}.btn-sm:hover{background:var(--bd)}
         .btn-xs{padding:.25rem .5rem;border-radius:6px;font-size:.6rem;cursor:pointer;border:0;font-weight:700}
-        .btn-wa{background:#25D366;color:#fff;padding:.3rem .6rem;border-radius:8px;font-size:.6rem;cursor:pointer;border:0;font-weight:700;display:inline-flex;align-items:center;gap:3px}
-        .btn-wa:hover{background:#1ebe5d}
+        .btn-wa{background:#25D366;color:#fff;padding:.3rem .6rem;border-radius:8px;font-size:.6rem;cursor:pointer;border:0;font-weight:700;display:inline-flex;align-items:center;gap:3px}.btn-wa:hover{background:#1ebe5d}
         .btn-radio-on{background:rgba(0,200,151,.15);color:var(--green);border:1px solid var(--green);padding:.25rem .5rem;border-radius:6px;font-size:.6rem;cursor:pointer;font-weight:700}
         .btn-radio-off{background:rgba(255,165,2,.15);color:var(--warn);border:1px solid var(--warn);padding:.25rem .5rem;border-radius:6px;font-size:.6rem;cursor:pointer;font-weight:700}
         .btn-suspend{background:rgba(255,165,2,.15);color:var(--warn);border:1px solid var(--warn);padding:.25rem .5rem;border-radius:6px;font-size:.6rem;cursor:pointer;font-weight:700}
         .btn-activate{background:rgba(0,200,151,.15);color:var(--green);border:1px solid var(--green);padding:.25rem .5rem;border-radius:6px;font-size:.6rem;cursor:pointer;font-weight:700}
+        .btn-export{background:rgba(0,200,151,.15);color:var(--green);border:1px solid var(--green);padding:.35rem .7rem;border-radius:8px;font-size:.7rem;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:4px}
+        .btn-import{background:rgba(255,165,2,.15);color:var(--warn);border:1px solid var(--warn);padding:.35rem .7rem;border-radius:8px;font-size:.7rem;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:4px}
         .layout{display:grid;grid-template-columns:200px 1fr;gap:1rem;padding:1rem}
         .sidebar{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:.8rem;height:fit-content;position:sticky;top:60px}
         .sidebar a{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;border-radius:var(--r);color:var(--txt2);text-decoration:none;font-size:.8rem;margin-bottom:.2rem;cursor:pointer;transition:.2s}.sidebar a:hover,.sidebar a.on{background:var(--acc);color:#fff}
@@ -41,12 +42,17 @@
         table{width:100%;border-collapse:collapse;font-size:.7rem}th{background:rgba(255,255,255,.03);padding:.4rem;text-align:left;font-weight:600;color:var(--txt2);font-size:.6rem;text-transform:uppercase}td{padding:.4rem;border-bottom:1px solid rgba(255,255,255,.03)}tr:hover td{background:rgba(255,255,255,.02)}
         .badge{padding:.15rem .5rem;border-radius:10px;font-size:.6rem;font-weight:700}.badge-g{background:rgba(0,200,151,.15);color:var(--green)}.badge-r{background:rgba(255,71,87,.15);color:var(--red)}.badge-y{background:rgba(255,165,2,.15);color:var(--warn)}.badge-o{background:rgba(255,165,2,.2);color:var(--warn)}
         .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center}
-        .modal{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:1.2rem;width:90%;max-width:480px;max-height:85vh;overflow-y:auto}.modal h3{margin-bottom:1rem}.modal label{display:block;font-size:.7rem;color:var(--txt2);margin-bottom:.2rem;margin-top:.5rem}.modal .inp{margin-bottom:.5rem}.modal-btns{display:flex;gap:.5rem;margin-top:1rem}.modal-btns .btn{flex:1}
+        .modal{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r2);padding:1.2rem;width:90%;max-width:550px;max-height:85vh;overflow-y:auto}.modal h3{margin-bottom:1rem}.modal label{display:block;font-size:.7rem;color:var(--txt2);margin-bottom:.2rem;margin-top:.5rem}.modal .inp{margin-bottom:.5rem}.modal-btns{display:flex;gap:.5rem;margin-top:1rem}.modal-btns .btn{flex:1}
+        .modal textarea{width:100%;min-height:200px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);padding:.7rem;font-size:.7rem;outline:0;resize:vertical;font-family:monospace}.modal textarea:focus{border-color:var(--acc)}
         .photo-thumb{width:50px;height:50px;border-radius:8px;object-fit:cover;border:2px solid var(--bd);cursor:pointer;transition:.2s;margin:2px}.photo-thumb:hover{transform:scale(1.15);border-color:var(--acc)}
         .photo-full{max-width:100%;max-height:70vh;border-radius:var(--r);display:block;margin:1rem auto}
         .pass-box{background:var(--card);padding:.2rem .5rem;border-radius:6px;font-family:monospace;color:var(--warn);font-weight:700;display:inline-block;margin:0 .2rem;font-size:.65rem}
         .toast{position:fixed;top:15px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);padding:.6rem 1rem;border-radius:var(--r);z-index:300;font-size:.75rem;font-weight:600;animation:t 2.5s ease forwards;pointer-events:none}
         .notif-badge{animation:pulse 2s infinite;display:inline-block;margin-left:5px}
+        .progress-bar{width:100%;height:6px;background:var(--bd);border-radius:3px;margin:.5rem 0;overflow:hidden;display:none}
+        .progress-bar .fill{height:100%;background:var(--acc);border-radius:3px;transition:width .3s;width:0%}
+        .info-box{background:rgba(108,92,231,.1);border:1px solid var(--acc);border-radius:var(--r);padding:.8rem;margin:.5rem 0;font-size:.7rem;color:var(--txt2)}
+        .info-box b{color:var(--acc)}
         @keyframes t{0%{opacity:0;transform:translateX(-50%) translateY(-10px)}10%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
         @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{position:fixed;bottom:0;left:0;right:0;z-index:99;border-radius:18px 18px 0 0;display:flex;flex-direction:row;overflow-x:auto;padding:.4rem;gap:.2rem}.sidebar a{font-size:.65rem;padding:.4rem .6rem;white-space:nowrap;margin:0}.cards{grid-template-columns:repeat(2,1fr)}}
@@ -55,7 +61,7 @@
 <body>
 <div id="loginScreen" class="login-screen"><div class="login-box"><div class="logo">🛺</div><h1>Zaachila Moto Admin</h1><div class="subtitle">PANEL DE ADMINISTRACIÓN</div><div id="loginError" class="login-err"></div><input type="email" id="email" class="inp" placeholder="Email"><input type="password" id="password" class="inp" placeholder="Contraseña"><button class="btn btn-acc" id="loginBtn" onclick="login()">Ingresar</button></div></div>
 <div id="dashboard" class="dashboard">
-    <header class="topbar"><h2>🛺 Zaachila Moto</h2><div class="topbar-actions"><span style="font-size:.75rem;color:var(--txt2)" id="adminName">Admin</span><span id="liveNotif" style="display:none;background:var(--red);color:#fff;padding:.2rem .6rem;border-radius:12px;font-size:.65rem;cursor:pointer" onclick="tab('solicitudes',document.querySelector('.sidebar a:nth-child(3)'));loadSolicitudes()">🔔 Nueva solicitud</span><button class="btn-sm" onclick="exportData()">📥</button><button class="btn-sm" onclick="importData()">📤</button><button class="btn-sm" onclick="auth.signOut();location.reload()">Salir</button></div></header>
+    <header class="topbar"><h2>🛺 Zaachila Moto</h2><div class="topbar-actions"><span style="font-size:.75rem;color:var(--txt2)" id="adminName">Admin</span><span id="liveNotif" style="display:none;background:var(--red);color:#fff;padding:.2rem .6rem;border-radius:12px;font-size:.65rem;cursor:pointer" onclick="tab('solicitudes',document.querySelector('.sidebar a:nth-child(3)'));loadSolicitudes()">🔔 Nueva solicitud</span><button class="btn-export" onclick="exportarBaseDatos()">📥 Exportar DB</button><button class="btn-import" onclick="importarBaseDatos()">📤 Importar DB</button><button class="btn-sm" onclick="auth.signOut();location.reload()">Salir</button></div></header>
     <div class="layout">
         <nav class="sidebar">
             <a class="on" onclick="tab('overview',this)">📊 Panel</a>
@@ -127,7 +133,7 @@ function toggleEstado(choferId){
 
 function toggleFotos(fid){const fotos=document.querySelectorAll('.'+fid);const span=document.getElementById('fotos_'+fid);if(span.style.display==='none'){span.style.display='inline';fotos.forEach(f=>f.style.display='inline-block')}else{span.style.display='none';fotos.forEach(f=>f.style.display='none')}}
 function toggleRadio(choferId){db.ref(`choferes/${choferId}/radio_ilimitado`).once('value',snap=>{const actual=snap.val()||false;db.ref(`choferes/${choferId}`).update({radio_ilimitado:!actual}).then(()=>{toast(!actual?'🌐 Radio ILIMITADO':'📍 Radio 500m');loadDrivers()})})}
-function sendWA(t,n,e,p){const msg=`🛺 *Zaachila Moto*%0A👤 ${n}%0A📧 ${e}%0A🔒 ${p||'N/D'}%0A📲 https://spiffy-sunshine-337158.netlify.app`;window.open(`https://wa.me/52${t.replace(/\D/g,'')}?text=${msg}`,'_blank')}
+function sendWA(t,n,e,p){const msg=`🛺 *Zaachila Moto*%0A👤 ${n}%0A📧 ${e}%0A🔒 ${p||'N/D'}%0A📲 https://zaachilamoto-conductor.vercel.app`;window.open(`https://wa.me/52${t.replace(/\D/g,'')}?text=${msg}`,'_blank')}
 function addDriver(){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>➕ Nuevo Chofer</h3><label>👤 Nombre</label><input class="inp" id="dName"><label>📧 Email</label><input class="inp" id="dEmail"><label>🔒 Contraseña</label><input class="inp" id="dPass" type="password"><label>🏍️ Placa</label><input class="inp" id="dPlaca"><label>🎨 Color</label><input class="inp" id="dColor"><label>🔢 Unidad</label><input class="inp" id="dUnidad"><label>📱 Teléfono</label><input class="inp" id="dTel"><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveD()">💾 Guardar</button></div></div></div>`}
 function saveD(){const n=document.getElementById('dName').value.trim(),e=document.getElementById('dEmail').value.trim(),p=document.getElementById('dPass').value,pl=document.getElementById('dPlaca').value.trim(),co=document.getElementById('dColor').value.trim(),un=document.getElementById('dUnidad').value.trim(),t=document.getElementById('dTel').value.trim();if(!n||!e||!p){toast('Campos obligatorios');return}if(p.length<6){toast('Contraseña: mínimo 6');return}auth.createUserWithEmailAndPassword(e,p).then(u=>db.ref(`choferes/${u.user.uid}`).set({nombre:n,email:e,password:p,placa:pl,color:co,numero:un,telefono:t,radio_ilimitado:false,estado:'activo',calificacion:0,total_servicios:0,ubicacion:{lat:16.9516,lng:-96.7491}})).then(()=>{closeM();toast('✅ Creado');loadDrivers();loadStats()}).catch(er=>toast(er.message))}
 function editD(id){db.ref(`choferes/${id}`).once('value',s=>{const c=s.val();document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>✏️ Editar</h3><label>👤 Nombre</label><input class="inp" id="eName" value="${c.nombre||''}"><label>📧 Email</label><input class="inp" id="eEmail" value="${c.email||''}"><label>🏍️ Placa</label><input class="inp" id="ePlaca" value="${c.placa||''}"><label>🎨 Color</label><input class="inp" id="eColor" value="${c.color||''}"><label>🔢 Unidad</label><input class="inp" id="eUnidad" value="${c.numero||c.unidad||''}"><label>📱 Teléfono</label><input class="inp" id="eTel" value="${c.telefono||''}"><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="saveE('${id}')">💾 Guardar</button></div></div></div>`})}
@@ -136,11 +142,11 @@ function resetP(id){db.ref(`choferes/${id}`).once('value',s=>{const c=s.val();do
 function saveP(id){const p=document.getElementById('rpPass').value,p2=document.getElementById('rpPass2').value;if(!p||p.length<6){toast('Mínimo 6');return}if(p!==p2){toast('No coinciden');return}db.ref(`choferes/${id}`).update({password:p});closeM();toast('✅ Actualizado');loadDrivers()}
 function delD(id){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()" style="text-align:center"><h3>⚠️ ¿Eliminar?</h3><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">No</button><button class="btn" style="background:var(--red)" onclick="confirmDel('${id}')">🗑️ Eliminar</button></div></div></div>`}
 function confirmDel(id){db.ref(`choferes/${id}`).remove().then(()=>{closeM();toast('✅ Eliminado');loadDrivers();loadStats()})}
-function loadSolicitudes(){db.ref('solicitudes_choferes').limitToLast(30).once('value',s=>{document.getElementById('solicitudesBadge').style.display='none';const d=s.val();let h='';if(!d){document.getElementById('solicitudesBody').innerHTML='<tr><td colspan="10">Sin solicitudes</td></tr>';return}Object.entries(d).reverse().forEach(([id,sol])=>{const fid='s'+id.replace(/[^a-zA-Z0-9]/g,'');const fotos=[];if(sol.foto_chofer)fotos.push(`<img src="${sol.foto_chofer}" class="photo-thumb ${fid}" onclick="verFoto('${sol.foto_chofer}','Foto Chofer - ${sol.nombre||'N/A'}')">`);if(sol.foto_moto)fotos.push(`<img src="${sol.foto_moto}" class="photo-thumb ${fid}" onclick="verFoto('${sol.foto_moto}','Foto Mototaxi - ${sol.nombre||'N/A'}')">`);if(sol.foto_placa)fotos.push(`<img src="${sol.foto_placa}" class="photo-thumb ${fid}" onclick="verFoto('${sol.foto_placa}','Foto Placa - ${sol.nombre||'N/A'}')">`);let bc='badge-y',txt='pendiente';if(sol.estado==='autorizado'){bc='badge-g';txt='autorizado'}if(sol.estado==='declinado'){bc='badge-r';txt='declinado'}h+=`<tr><td>${sol.nombre||'-'}</td><td>${sol.email||'-'}</td><td>${sol.telefono||'-'}</td><td>${sol.sitio||'-'}</td><td>${sol.placa||'-'}</td><td>${sol.numero||'-'}</td><td>${sol.color||'-'}</td><td><span id="fotos_${fid}">${fotos.join(' ')}</span> ${fotos.length>0?`<button class="btn-xs btn-sm" onclick="toggleFotos('${fid}')">👁️</button>`:''}</td><td><span class="badge ${bc}">${txt}</span></td><td style="display:flex;gap:3px">${sol.estado==='pendiente'?`<button class="btn-xs btn-sm" onclick="autorizarChofer('${id}')">✅</button><button class="btn-xs" onclick="declinarSolicitud('${id}')" style="background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3)">❌</button>`:''}<button class="btn-xs" onclick="eliminarSolicitud('${id}')" style="background:rgba(255,71,87,.1);color:var(--red);border:1px solid var(--red)">🗑️</button></td></tr>`});document.getElementById('solicitudesBody').innerHTML=h})}
+function loadSolicitudes(){db.ref('solicitudes_choferes').limitToLast(50).once('value',s=>{document.getElementById('solicitudesBadge').style.display='none';const d=s.val();let h='';if(!d){document.getElementById('solicitudesBody').innerHTML='<tr><td colspan="10">Sin solicitudes</td></tr>';return}Object.entries(d).reverse().forEach(([id,sol])=>{const fid='s'+id.replace(/[^a-zA-Z0-9]/g,'');const fotos=[];if(sol.foto_chofer)fotos.push(`<img src="${sol.foto_chofer}" class="photo-thumb ${fid}" onclick="verFoto('${sol.foto_chofer}','Foto Chofer - ${sol.nombre||'N/A'}')">`);if(sol.foto_moto)fotos.push(`<img src="${sol.foto_moto}" class="photo-thumb ${fid}" onclick="verFoto('${sol.foto_moto}','Foto Mototaxi - ${sol.nombre||'N/A'}')">`);if(sol.foto_placa)fotos.push(`<img src="${sol.foto_placa}" class="photo-thumb ${fid}" onclick="verFoto('${sol.foto_placa}','Foto Placa - ${sol.nombre||'N/A'}')">`);let bc='badge-y',txt='pendiente';if(sol.estado==='autorizado'){bc='badge-g';txt='autorizado'}if(sol.estado==='declinado'){bc='badge-r';txt='declinado'}h+=`<tr><td>${sol.nombre||'-'}</td><td>${sol.email||'-'}</td><td>${sol.telefono||'-'}</td><td>${sol.sitio||'-'}</td><td>${sol.placa||'-'}</td><td>${sol.numero||'-'}</td><td>${sol.color||'-'}</td><td><span id="fotos_${fid}">${fotos.join(' ')}</span> ${fotos.length>0?`<button class="btn-xs btn-sm" onclick="toggleFotos('${fid}')">👁️</button>`:''}</td><td><span class="badge ${bc}">${txt}</span></td><td style="display:flex;gap:3px">${sol.estado==='pendiente'?`<button class="btn-xs btn-sm" onclick="autorizarChofer('${id}')">✅</button><button class="btn-xs" onclick="declinarSolicitud('${id}')" style="background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3)">❌</button>`:''}<button class="btn-xs" onclick="eliminarSolicitud('${id}')" style="background:rgba(255,71,87,.1);color:var(--red);border:1px solid var(--red)">🗑️</button></td></tr>`});document.getElementById('solicitudesBody').innerHTML=h})}
 function eliminarSolicitud(id){if(confirm('¿Eliminar esta solicitud?')){db.ref(`solicitudes_choferes/${id}`).remove().then(()=>{toast('🗑️ Eliminada');loadSolicitudes();loadStats()}).catch(er=>toast(er.message))}}
-function autorizarChofer(id){db.ref(`solicitudes_choferes/${id}`).once('value',snap=>{const sol=snap.val();if(!sol.email||!sol.email.includes('@')){toast('❌ Email inválido');return}const password=Math.random().toString(36).slice(-8);auth.fetchSignInMethodsForEmail(sol.email).then(methods=>{if(methods&&methods.length>0){toast('⚠️ Email ya registrado. Actualizando...');return auth.signInWithEmailAndPassword(sol.email,password).catch(()=>auth.createUserWithEmailAndPassword(sol.email,password))}else{return auth.createUserWithEmailAndPassword(sol.email,password)}}).then(u=>{return db.ref(`choferes/${u.user.uid}`).set({nombre:sol.nombre,email:sol.email,telefono:sol.telefono,sitio:sol.sitio,placa:sol.placa,numero:sol.numero,color:sol.color,foto_chofer:sol.foto_chofer,foto_moto:sol.foto_moto,foto_placa:sol.foto_placa,radio_ilimitado:false,estado:'activo',calificacion:0,total_servicios:0,servicios_hoy:0,password:password,ubicacion:{lat:16.9516,lng:-96.7491}})}).then(()=>{return db.ref(`solicitudes_choferes/${id}`).update({estado:'autorizado',password:password})}).then(()=>{toast('✅ Autorizado');loadSolicitudes();loadDrivers();loadStats();const tel=sol.telefono.replace(/\D/g,'');const msg=`🛺 *Zaachila Moto* - Cuenta Aprobada%0A👤 ${sol.nombre}%0A📧 ${sol.email}%0A🔒 ${password}%0A📲 https://spiffy-sunshine-337158.netlify.app`;if(tel)window.open(`https://wa.me/52${tel}?text=${msg}`,'_blank')}).catch(er=>{console.error('Error:',er);toast('❌ Error: '+er.message)})})}
+function autorizarChofer(id){db.ref(`solicitudes_choferes/${id}`).once('value',snap=>{const sol=snap.val();if(!sol.email||!sol.email.includes('@')){toast('❌ Email inválido');return}const password=Math.random().toString(36).slice(-8);auth.fetchSignInMethodsForEmail(sol.email).then(methods=>{if(methods&&methods.length>0){toast('⚠️ Email ya registrado. Actualizando...');return auth.signInWithEmailAndPassword(sol.email,password).catch(()=>auth.createUserWithEmailAndPassword(sol.email,password))}else{return auth.createUserWithEmailAndPassword(sol.email,password)}}).then(u=>{return db.ref(`choferes/${u.user.uid}`).set({nombre:sol.nombre,email:sol.email,telefono:sol.telefono,sitio:sol.sitio,placa:sol.placa,numero:sol.numero,color:sol.color,foto_chofer:sol.foto_chofer,foto_moto:sol.foto_moto,foto_placa:sol.foto_placa,radio_ilimitado:false,estado:'activo',calificacion:0,total_servicios:0,servicios_hoy:0,password:password,ubicacion:{lat:16.9516,lng:-96.7491}})}).then(()=>{return db.ref(`solicitudes_choferes/${id}`).update({estado:'autorizado',password:password})}).then(()=>{toast('✅ Autorizado');loadSolicitudes();loadDrivers();loadStats();const tel=sol.telefono.replace(/\D/g,'');const msg=`🛺 *Zaachila Moto* - Cuenta Aprobada%0A👤 ${sol.nombre}%0A📧 ${sol.email}%0A🔒 ${password}%0A📲 https://zaachilamoto-conductor.vercel.app`;if(tel)window.open(`https://wa.me/52${tel}?text=${msg}`,'_blank')}).catch(er=>{console.error('Error:',er);toast('❌ Error: '+er.message)})})}
 function declinarSolicitud(id){if(confirm('¿Declinar?')){db.ref(`solicitudes_choferes/${id}`).update({estado:'declinado'}).then(()=>{toast('❌ Declinada');loadSolicitudes();loadStats()})}}
-function loadServices(){db.ref('servicios').limitToLast(20).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="5">Sin viajes</td></tr>';return}Object.entries(d).reverse().forEach(([id,v])=>{let b=v.estado==='completado'?'badge-g':v.estado==='cancelado'?'badge-r':'badge-y';h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${v.estado}</span></td><td>$${v.cobro||0}</td></tr>`});document.getElementById('servicesBody').innerHTML=h})}
+function loadServices(){db.ref('servicios').limitToLast(30).once('value',s=>{const d=s.val();let h='';if(!d){document.getElementById('servicesBody').innerHTML='<tr><td colspan="5">Sin viajes</td></tr>';return}Object.entries(d).reverse().forEach(([id,v])=>{let b=v.estado==='completado'?'badge-g':v.estado==='cancelado'?'badge-r':'badge-y';h+=`<tr><td>#${id.substring(0,5)}</td><td>${(v.origen?.direccion||'').substring(0,15)}</td><td>${(v.destino?.direccion||'').substring(0,15)}</td><td><span class="badge ${b}">${v.estado}</span></td><td>$${v.cobro||0}</td></tr>`});document.getElementById('servicesBody').innerHTML=h})}
 function loadReports(){
     db.ref('reportes/objetos_olvidados').limitToLast(30).once('value',async s=>{
         const d=s.val();
@@ -153,19 +159,15 @@ function loadReports(){
                 try{
                     const snap=await db.ref(`choferes/${r.choferId}`).once('value');
                     const ch=snap.val()||{};
-                    choferNombre=ch.nombre||'-';
-                    choferPlaca=ch.placa||'-';
-                    choferTel=ch.telefono||'-';
+                    choferNombre=ch.nombre||'-';choferPlaca=ch.placa||'-';choferTel=ch.telefono||'-';
                 }catch(e){}
             }
-            if(!nombrePasajero||nombrePasajero==='-'){
-                if(r.servicioId){
-                    try{
-                        const snap=await db.ref(`servicios/${r.servicioId}`).once('value');
-                        const sv=snap.val()||{};
-                        nombrePasajero=sv.nombrePasajero||'-';
-                    }catch(e){}
-                }
+            if((!nombrePasajero||nombrePasajero==='-')&&r.servicioId){
+                try{
+                    const snap=await db.ref(`servicios/${r.servicioId}`).once('value');
+                    const sv=snap.val()||{};
+                    nombrePasajero=sv.nombrePasajero||'-';
+                }catch(e){}
             }
             h+=`<tr>
                 <td>${new Date(r.timestamp).toLocaleDateString()}</td>
@@ -183,10 +185,164 @@ function loadReports(){
         document.getElementById('reportsBody').innerHTML=h;
     });
 }
-function loadFinances(){db.ref('admin/comisiones').limitToLast(20).once('value',s=>{const d=s.val();let h='',t=0;const hoy=new Date().toISOString().split('T')[0];if(!d){document.getElementById('commissionsBody').innerHTML='<tr><td colspan="4">Sin datos</td></tr>';return}Object.entries(d).reverse().forEach(([id,c])=>{if(c.fecha===hoy)t+=c.comision||0;h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`});document.getElementById('finToday').textContent='$'+t;document.getElementById('commissionsBody').innerHTML=h})}
-function exportData(){db.ref('/').once('value',s=>{const data=JSON.stringify(s.val(),null,2);const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zaachila_backup.json';a.click();toast('📥 Exportado')})}
-function importData(){document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()"><h3>📤 Importar</h3><p style="font-size:.7rem;color:var(--warn)">⚠️ Sobrescribirá datos</p><textarea id="jsonText" placeholder="Pega el JSON..."></textarea><div class="modal-btns"><button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button><button class="btn btn-acc" onclick="confirmImport()">Importar</button></div></div></div>`}
-function confirmImport(){try{const data=JSON.parse(document.getElementById('jsonText').value.trim());if(confirm('¿Sobrescribir?')){db.ref('/').set(data).then(()=>{closeM();toast('✅ Importado');loadAll()})}}catch(e){toast('❌ JSON inválido')}}
+function loadFinances(){db.ref('admin/comisiones').limitToLast(30).once('value',s=>{const d=s.val();let h='',t=0;const hoy=new Date().toISOString().split('T')[0];if(!d){document.getElementById('commissionsBody').innerHTML='<tr><td colspan="4">Sin datos</td></tr>';return}Object.entries(d).reverse().forEach(([id,c])=>{if(c.fecha===hoy)t+=c.comision||0;h+=`<tr><td>${c.fecha||'-'}</td><td>#${(c.servicioId||'').substring(0,5)}</td><td>$${c.monto_servicio||0}</td><td>$${c.comision||0}</td></tr>`});document.getElementById('finToday').textContent='$'+t;document.getElementById('commissionsBody').innerHTML=h})}
+
+// ============ 📥📤 IMPORTAR / EXPORTAR BASE DE DATOS ============
+
+// Exportar: descarga un JSON con TODA la base de datos
+function exportarBaseDatos(){
+    document.getElementById('modalContainer').innerHTML = `
+        <div class="modal-overlay" onclick="closeM()">
+            <div class="modal" onclick="event.stopPropagation()">
+                <h3>📥 Exportar Base de Datos</h3>
+                <p style="font-size:.7rem;color:var(--txt2);margin-bottom:.5rem">Se descargará un archivo JSON con todos los datos actuales.</p>
+                <div class="info-box">
+                    <b>💡 Recomendación:</b> Haz una copia de seguridad al menos una vez por semana.<br>
+                    El archivo incluye: choferes, servicios, solicitudes, reportes, comisiones y más.
+                </div>
+                <div class="progress-bar" id="exportProgress"><div class="fill" id="exportFill"></div></div>
+                <p style="font-size:.65rem;color:var(--txt3);text-align:center" id="exportStatus">Preparando descarga...</p>
+                <div class="modal-btns">
+                    <button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button>
+                    <button class="btn btn-acc" id="btnExportNow" onclick="ejecutarExportacion()">📥 Descargar JSON</button>
+                </div>
+            </div>
+        </div>`;
+}
+
+window.ejecutarExportacion = function(){
+    const btn=document.getElementById('btnExportNow');
+    const progress=document.getElementById('exportProgress');
+    const fill=document.getElementById('exportFill');
+    const status=document.getElementById('exportStatus');
+    btn.disabled=true;btn.textContent='⏳ Exportando...';
+    progress.style.display='block';fill.style.width='30%';status.textContent='Leyendo base de datos...';
+    
+    db.ref('/').once('value',s=>{
+        fill.style.width='70%';status.textContent='Procesando datos...';
+        const data=s.val();
+        const json=JSON.stringify(data,null,2);
+        fill.style.width='100%';status.textContent='✅ Listo. Descargando...';
+        
+        const blob=new Blob([json],{type:'application/json'});
+        const a=document.createElement('a');
+        const fecha=new Date().toISOString().split('T')[0];
+        const hora=new Date().toTimeString().split(' ')[0].replace(/:/g,'-');
+        a.href=URL.createObjectURL(blob);
+        a.download=`zaachilamoto_backup_${fecha}_${hora}.json`;
+        a.click();
+        
+        setTimeout(()=>{
+            closeM();
+            toast('📥 Base de datos exportada con éxito');
+        },500);
+    }).catch(err=>{
+        status.textContent='❌ Error: '+err.message;
+        btn.disabled=false;btn.textContent='📥 Reintentar';
+    });
+};
+
+// Importar: carga un JSON y sobreescribe la base de datos
+function importarBaseDatos(){
+    document.getElementById('modalContainer').innerHTML = `
+        <div class="modal-overlay" onclick="closeM()">
+            <div class="modal" onclick="event.stopPropagation()">
+                <h3>📤 Importar Base de Datos</h3>
+                <div class="info-box" style="border-color:var(--red);background:rgba(255,71,87,.1)">
+                    <b>⚠️ ADVERTENCIA:</b> Esta acción <b style="color:var(--red)">SOBREESCRIBIRÁ</b> todos los datos actuales con los del archivo JSON. Esta operación no se puede deshacer. Asegúrate de tener un respaldo reciente.
+                </div>
+                <label style="margin-top:.5rem">📁 Seleccionar archivo JSON de respaldo</label>
+                <input type="file" id="importFile" class="inp" accept=".json" style="padding:.5rem" onchange="previsualizarImportacion(this)">
+                <div id="importPreview" style="display:none">
+                    <div class="info-box" id="importInfo"></div>
+                </div>
+                <textarea id="jsonText" placeholder="O pega el contenido del JSON aquí..." style="display:none"></textarea>
+                <p style="font-size:.6rem;color:var(--txt3);margin-top:.3rem;text-align:center">También puedes pegar manualmente el contenido del JSON</p>
+                <button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2);margin-top:.3rem;font-size:.7rem;width:100%" onclick="mostrarTextareaImport()">📋 O pegar texto manualmente</button>
+                <div class="progress-bar" id="importProgress"><div class="fill" id="importFill"></div></div>
+                <p style="font-size:.65rem;color:var(--txt3);text-align:center" id="importStatus"></p>
+                <div class="modal-btns">
+                    <button class="btn" style="background:transparent;border:1px solid var(--bd);color:var(--txt2)" onclick="closeM()">Cancelar</button>
+                    <button class="btn" style="background:var(--warn);color:#000" id="btnImportNow" onclick="ejecutarImportacion()" disabled>📤 Importar Ahora</button>
+                </div>
+            </div>
+        </div>`;
+}
+
+let importDataGlobal=null;
+
+window.previsualizarImportacion = function(input){
+    const file=input.files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        try{
+            importDataGlobal=JSON.parse(e.target.result);
+            const info=document.getElementById('importInfo');
+            const preview=document.getElementById('importPreview');
+            const btn=document.getElementById('btnImportNow');
+            const choferes=importDataGlobal.choferes?Object.keys(importDataGlobal.choferes).length:0;
+            const servicios=importDataGlobal.servicios?Object.keys(importDataGlobal.servicios).length:0;
+            const solicitudes=importDataGlobal.solicitudes_choferes?Object.keys(importDataGlobal.solicitudes_choferes).length:0;
+            info.innerHTML=`<b>✅ Archivo válido</b><br>🛺 ${choferes} choferes | 📋 ${servicios} servicios | 📝 ${solicitudes} solicitudes`;
+            preview.style.display='block';
+            btn.disabled=false;
+        }catch(err){
+            toast('❌ JSON inválido');
+            importDataGlobal=null;
+            document.getElementById('btnImportNow').disabled=true;
+        }
+    };
+    reader.readAsText(file);
+};
+
+window.mostrarTextareaImport = function(){
+    const ta=document.getElementById('jsonText');
+    ta.style.display='block';
+    ta.placeholder='Pega aquí el contenido del archivo JSON...';
+    ta.oninput=function(){
+        try{
+            importDataGlobal=JSON.parse(ta.value.trim());
+            document.getElementById('btnImportNow').disabled=false;
+            document.getElementById('importStatus').textContent='✅ JSON válido detectado';
+            document.getElementById('importStatus').style.color='var(--green)';
+        }catch(e){
+            document.getElementById('btnImportNow').disabled=true;
+            document.getElementById('importStatus').textContent='⏳ Esperando JSON válido...';
+            document.getElementById('importStatus').style.color='var(--txt3)';
+        }
+    };
+};
+
+window.ejecutarImportacion = function(){
+    if(!importDataGlobal){
+        toast('❌ No hay datos válidos para importar');
+        return;
+    }
+    const btn=document.getElementById('btnImportNow');
+    const progress=document.getElementById('importProgress');
+    const fill=document.getElementById('importFill');
+    const status=document.getElementById('importStatus');
+    btn.disabled=true;btn.textContent='⏳ Importando...';
+    progress.style.display='block';fill.style.width='20%';status.textContent='Escribiendo en la base de datos...';
+    
+    db.ref('/').set(importDataGlobal)
+        .then(()=>{
+            fill.style.width='100%';status.textContent='✅ Importación completada.';
+            toast('📤 Base de datos importada con éxito');
+            setTimeout(()=>{
+                closeM();
+                loadAll();
+            },1000);
+        })
+        .catch(err=>{
+            status.textContent='❌ Error: '+err.message;
+            btn.disabled=false;btn.textContent='📤 Reintentar';
+        });
+};
+
+// ============ FIN IMPORTAR/EXPORTAR ============
+
 function tab(name,el){document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');document.getElementById('tab-'+name).style.display='block';document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('on'));el.classList.add('on');if(name==='drivers')loadDrivers();if(name==='solicitudes')loadSolicitudes();if(name==='services')loadServices();if(name==='reports')loadReports();if(name==='finances')loadFinances()}
 function closeM(){document.getElementById('modalContainer').innerHTML=''}
 function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2500)}
